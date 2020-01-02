@@ -1,0 +1,19 @@
+{
+  "Version": "v0.0.11",
+  "Type": 4,
+  "AccessRight": 0,
+  "DownloadUrl": null,
+  "InstallPath": "Assets/QFramework/UIKitDemo_TodoList/",
+  "DocUrl": "https://liangxiegame.com",
+  "Readme": {
+    "version": "v0.0.11",
+    "content": "upgrade qf v0.1.x",
+    "author": "liangxie",
+    "date": "2019 年 09 月 03 日 22:26",
+    "VersionNumber": 11
+  },
+  "Id": null,
+  "Name": "UIKitDemo_TodoList",
+  "VersionNumber": 11,
+  "FileName": "UIKitDemo_TodoList_v0.0.11.unitypackage"
+}
