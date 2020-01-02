@@ -138,23 +138,28 @@
         {
             if (eventData.clickCount == 2)
             {
-                ProcessStartInfo psi = new ProcessStartInfo();
                 if(Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor)
                 {
+                    ProcessStartInfo psi = new ProcessStartInfo();
                     psi.FileName = "open";
                     psi.Arguments = ResInfo.FileFullName;
-                }else if(Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+                    psi.UseShellExecute = false;
+                    psi.RedirectStandardOutput = true;
+                    Process p = Process.Start(psi);
+                    string strOutput = p.StandardOutput.ReadToEnd();
+                    p.WaitForExit();
+                    UnityEngine.Debug.Log(strOutput);
+                }
+                else if(Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
                 {
-                    psi.FileName = "mspaint";
-                    psi.Arguments = ResInfo.FileFullName;
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    process.StartInfo.FileName = ResInfo.FileFullName;
+                    process.StartInfo.Arguments = "rundll32.exe C://WINDOWS//system32//shimgvw.dll";
+                    process.StartInfo.UseShellExecute = true;
+                    process.Start();
                 }
 
-                psi.UseShellExecute = false;
-                psi.RedirectStandardOutput = true;
-                Process p = Process.Start(psi);
-                string strOutput = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
-                UnityEngine.Debug.Log(strOutput);
+
 
             }
             if(eventData.button == PointerEventData.InputButton.Left)

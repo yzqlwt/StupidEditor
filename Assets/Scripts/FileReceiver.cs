@@ -45,11 +45,11 @@
 
             });
 
-            var files = Directory.GetFiles(@"C:\Users\yzqlwt\Pictures\互动2-1_slices", "*").Where(s => s.EndsWith(".jpg") || s.EndsWith(".png"));
+            var files = Directory.GetFiles(@"C:\Users\yzqlwt\Pictures", "*").Where(s => s.EndsWith(".jpg") || s.EndsWith(".png"));
             var i = 0;
             foreach (var file in files)
             {
-                if (i > 10)
+                if (i > 100)
                 {
                     break;
                 }
@@ -63,6 +63,7 @@
                 }
 
             }
+
         }
 
         /// <summary>
