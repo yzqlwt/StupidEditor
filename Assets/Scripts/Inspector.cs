@@ -20,7 +20,7 @@ public class Inspector : MonoBehaviour
     public Text ExtensionText;
     public Text TimeText;
     public Button DeleteBtn;
-    public Toggle IsCsb;
+    public Dropdown Tags;
 
     private Toggle mItem;
     void Start()
@@ -56,12 +56,12 @@ public class Inspector : MonoBehaviour
                 Debug.LogError("mItem is null");
             }
         });
-        IsCsb.onValueChanged.AddListener((ret) =>
+        Tags.onValueChanged.AddListener((ret) =>
         {
             if (mItem)
             {
                 var resourceItem = mItem.GetComponent<ResourceItem>();
-                resourceItem.SetIsCsb(ret);
+                resourceItem.SetTag(Tags.captionText.text);
             }
             else
             {
@@ -82,6 +82,12 @@ public class Inspector : MonoBehaviour
                 Debug.LogError("mItem is null");
             }
         });
+        Tags.ClearOptions();
+        Tags.AddOptions(new List<string> {
+           ResourceTag.TexturePackage,
+           ResourceTag.UnTexturePackage,
+           ResourceTag.CocosStudio,
+        });
     }
 
     void SetUI()
@@ -89,8 +95,7 @@ public class Inspector : MonoBehaviour
         var ResInfo = mItem.GetComponent<ResourceItem>().ResInfo;
         InputName.text = ResInfo.FileName.Split('.')[0];
         ExtensionText.text = ResInfo.Extension;
-        TimeText.text = ResInfo.Time.ToString();
-        IsCsb.isOn = ResInfo.isCsb;
+        TimeText.text = ResInfo.Time.ToString();                   
     }
 
 }

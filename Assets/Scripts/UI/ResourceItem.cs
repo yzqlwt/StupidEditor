@@ -10,6 +10,13 @@
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
 
+    public class ResourceTag
+    {
+        public static string CocosStudio = "CocosStudio(不合图不做处理)";
+        public static string TexturePackage = "进行合图(适用于大部分资源)";
+        public static string UnTexturePackage = "不进行合图(适用于较大的背景图)";
+    }
+
     public class ResourceInfo
     {
         public string FileName;
@@ -27,7 +34,7 @@
         }
 
         //
-        public bool isCsb = false;
+        public string Tag = "";
     }
 
     public class ResourceItem : MonoBehaviour, IPointerClickHandler
@@ -98,14 +105,19 @@
         IEnumerator AddTag(ResourceInfo info)
         {
             string path = "";
-            if(!info.isCsb)
+            if(info.Tag == ResourceTag.TexturePackage)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/green.png";
                 TagImage.gameObject.SetActive(false);
             }
-            else
+            else if(info.Tag == ResourceTag.CocosStudio)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/red.png";
+                TagImage.gameObject.SetActive(true);
+            }
+            else if (info.Tag == ResourceTag.UnTexturePackage)
+            {
+                path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/yellow.png";
                 TagImage.gameObject.SetActive(true);
             }
 #pragma warning disable CS0618 // 类型或成员已过时
@@ -182,9 +194,9 @@
             file.MoveTo(file.DirectoryName+"/"+name);
             ResInfo.FileFullName = file.DirectoryName + "/" + name;
         }
-        public void SetIsCsb(bool ret)
+        public void SetTag(string ret)
         {
-            ResInfo.isCsb = ret;
+            ResInfo.Tag = ret;
             StartCoroutine(AddTag(ResInfo));
         }
         public void DeleteItem()
