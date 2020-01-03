@@ -27,7 +27,7 @@
         }
 
         //
-        public string TAG = "Normal";
+        public bool isCsb = false;
     }
 
     public class ResourceItem : MonoBehaviour, IPointerClickHandler
@@ -98,16 +98,15 @@
         IEnumerator AddTag(ResourceInfo info)
         {
             string path = "";
-            if(info.TAG == "Normal")
+            if(!info.isCsb)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/green.png";
-            }else if(info.TAG == "CSB")
-            {
-                path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/blue.png";
+                TagImage.gameObject.SetActive(false);
             }
             else
             {
-                UnityEngine.Debug.LogError("未支持的类型" + info.TAG);
+                path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/red.png";
+                TagImage.gameObject.SetActive(true);
             }
 #pragma warning disable CS0618 // 类型或成员已过时
             var www = new WWW(path);
@@ -172,7 +171,7 @@
         IEnumerator ClickResourceItem()
         {
             yield return new WaitForFixedUpdate();
-            //TypeEventSystem.Send(new ResourceItemClick());
+            TypeEventSystem.Send(new ResourceItemClick());
         }
 
         public void SetFileName(string name)
@@ -183,9 +182,9 @@
             file.MoveTo(file.DirectoryName+"/"+name);
             ResInfo.FileFullName = file.DirectoryName + "/" + name;
         }
-        public void SetTag(string Tag)
+        public void SetIsCsb(bool ret)
         {
-            ResInfo.TAG = Tag;
+            ResInfo.isCsb = ret;
             StartCoroutine(AddTag(ResInfo));
         }
         public void DeleteItem()

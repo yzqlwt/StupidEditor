@@ -11,7 +11,7 @@
 
     public class FileDragIn
     {
-        public string FileFullName;
+        public string Path;
     }
     public class FileInfo
     {
@@ -29,40 +29,43 @@
         {
             DirTools.ClearTempPath();
             TypeEventSystem.Register<FileDragIn>((fileDragIn)=> {
-                var fileFullName = fileDragIn.FileFullName;
-                System.IO.FileInfo file = new System.IO.FileInfo(fileFullName);
-                var tempPath = DirTools.GetTempPath();
-                File.Copy(file.FullName, tempPath + "/" + file.Name, true);
-                var md5Code = GetMD5HashFromFile(fileFullName);
-                TypeEventSystem.Send(new FileInfo()
+                var path = fileDragIn.Path;
+                if (File.Exists(path))
                 {
-                    FileName = file.Name,
-                    FileFullName = tempPath + "/" + file.Name,
-                    Extension = file.Extension,
-                    Time = DateTime.Now,
-                    MD5 = md5Code
-                });
+                    System.IO.FileInfo file = new System.IO.FileInfo(path);
+                    var tempPath = DirTools.GetTempPath();
+                    File.Copy(file.FullName, tempPath + "/" + file.Name, true);
+                    var md5Code = GetMD5HashFromFile(path);
+                    TypeEventSystem.Send(new FileInfo()
+                    {
+                        FileName = file.Name,
+                        FileFullName = tempPath + "/" + file.Name,
+                        Extension = file.Extension,
+                        Time = DateTime.Now,
+                        MD5 = md5Code
+                    });
+                }
+                else if (Directory.Exists(path))
+                {
+                    Directory.GetFiles(path, "*").ForEach((file) => {
+                        TypeEventSystem.Send(new FileDragIn()
+                        {
+                            Path = file
+                        });
+                    });
+
+                }
+                else
+                {
+                    Debug.LogError("ERROR FileDragIn"+ path);
+                }
+
 
             });
-
-            var files = Directory.GetFiles(@"C:\Users\yzqlwt\Pictures", "*").Where(s => s.EndsWith(".jpg") || s.EndsWith(".png"));
-            var i = 0;
-            foreach (var file in files)
+            TypeEventSystem.Send(new FileDragIn()
             {
-                if (i > 100)
-                {
-                    break;
-                }
-                TypeEventSystem.Send(new FileDragIn()
-                {
-                    FileFullName = file
-                });
-                if (file.IndexOf("2") > 0)
-                {
-                    i++;
-                }
-
-            }
+                Path = @"C:\Users\yzqlwt\Pictures\互动2-1_slices"
+            });
 
         }
 
