@@ -268,7 +268,8 @@ namespace QFramework
 			}
 
 			public static string GoToPersistent {
-				get {
+				get
+				{
 					return Language.IsChinese ? "打开 Persistent 目录" : "Go To Persistance";
 				}
 			}

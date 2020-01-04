@@ -12,6 +12,7 @@
     public class FileDragIn
     {
         public string Path;
+        public string Tag;
     }
     public class FileInfo
     {
@@ -20,6 +21,7 @@
         public string Extension;
         public string MD5;
         public DateTime Time;
+        public string Tag;
     }
 
     public class FileReceiver : MonoBehaviour
@@ -42,15 +44,21 @@
                         FileFullName = tempPath + "/" + file.Name,
                         Extension = file.Extension,
                         Time = DateTime.Now,
-                        MD5 = md5Code
+                        MD5 = md5Code,
+                        Tag = fileDragIn.Tag
                     });
                 }
                 else if (Directory.Exists(path))
                 {
+                    var allFiles = Directory.GetFiles(path, "*");
+                    var isCsb = allFiles.ToList<string>().Find((file) => {
+                        return file.EndsWith(".csb");
+                    }) != null;
                     Directory.GetFiles(path, "*").ForEach((file) => {
                         TypeEventSystem.Send(new FileDragIn()
                         {
-                            Path = file
+                            Path = file,
+                            Tag  = isCsb ? ResourceTag.CocosStudio : ResourceTag.TexturePackage
                         });
                     });
 
@@ -62,10 +70,20 @@
 
 
             });
-            TypeEventSystem.Send(new FileDragIn()
+            if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
             {
-                Path = @"C:\Users\yzqlwt\Pictures\互动2-1_slices"
-            });
+                TypeEventSystem.Send(new FileDragIn()
+                {
+                    Path = @"C:\Users\yzqlwt\Pictures\互动2-1_slices"
+                });
+            }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+            {
+                TypeEventSystem.Send(new FileDragIn()
+                {
+                    Path = @"/Users/yzqlwt/Desktop/image"
+                });
+            }
+
 
         }
 

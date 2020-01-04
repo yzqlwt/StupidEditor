@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using QFramework;
 using StupidEditor;
@@ -19,6 +20,7 @@ public class Inspector : MonoBehaviour
     public InputField InputName;
     public Text ExtensionText;
     public Text TimeText;
+    public Text SizeText;
     public Button DeleteBtn;
     public Dropdown Tags;
 
@@ -49,7 +51,14 @@ public class Inspector : MonoBehaviour
             if (mItem)
             {
                 var resourceItem = mItem.GetComponent<ResourceItem>();
-                resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
+                try
+                {
+                    resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
+                }
+                catch (IOException e)
+                {
+                    resourceItem.SetFileName(value + "的副本" +resourceItem.ResInfo.Extension);
+                }
             }
             else
             {
@@ -85,7 +94,7 @@ public class Inspector : MonoBehaviour
         Tags.ClearOptions();
         Tags.AddOptions(new List<string> {
            ResourceTag.TexturePackage,
-           ResourceTag.UnTexturePackage,
+           ResourceTag.None,
            ResourceTag.CocosStudio,
         });
     }
@@ -95,7 +104,20 @@ public class Inspector : MonoBehaviour
         var ResInfo = mItem.GetComponent<ResourceItem>().ResInfo;
         InputName.text = ResInfo.FileName.Split('.')[0];
         ExtensionText.text = ResInfo.Extension;
-        TimeText.text = ResInfo.Time.ToString();                   
+        TimeText.text = ResInfo.Time.ToString();
+        var index = Tags.options.FindIndex((option) => {
+            return option.text == ResInfo.Tag;
+        });
+        Tags.SetValueWithoutNotify(index);    
+        if(ResInfo.Width != 0 && ResInfo.Height != 0)
+        {
+            SizeText.gameObject.SetActive(true);
+            SizeText.text = "Size: " + ResInfo.Width + "x" + ResInfo.Height;
+        }
+        else
+        {
+            SizeText.gameObject.SetActive(false);
+        }
     }
 
 }

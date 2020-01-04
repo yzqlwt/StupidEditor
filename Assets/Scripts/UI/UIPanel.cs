@@ -18,6 +18,27 @@ namespace QFramework.Example
     using UnityEngine.UI;
     using QFramework;
     using StupidEditor;
+    using System.Threading.Tasks;
+    using System.Threading;
+    using SimplePopup;
+
+    public enum SequenceCommand
+    {
+        GenerateJson,
+        TexturePackage,
+        Zip,
+    }
+
+    public class ExportCommand
+    {
+        public List<ResourceInfo> TotalResInfo;
+        public SequenceCommand command;
+    }
+    public class ExportCommandDone
+    {
+        public bool Ret;
+        public string Reason;
+    }
 
     public class UIPanelData : QFramework.UIPanelData
     {
@@ -63,6 +84,49 @@ namespace QFramework.Example
                 Item.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
                 Item.GetComponent<Toggle>().group = ScrollViewContent.GetComponent<ToggleGroup>();
             });
+        }
+
+        public async void Export()
+        {
+            Debug.Log("导出");
+            List<ResourceInfo> TotalInfo = new List<ResourceInfo>();
+            foreach (Transform child in ScrollViewContent)
+            {
+                var info = child.GetComponent<ResourceItem>().ResInfo;
+                TotalInfo.Add(info);
+            }
+            ExportCommandDone result = null;
+            result = await Task.Run(() => exec(TotalInfo, SequenceCommand.TexturePackage));
+            if(result.Ret == false)
+            {
+                ShowErrorTips(result.Reason);
+                return;
+            }
+            result = await Task.Run(() => exec(TotalInfo, SequenceCommand.GenerateJson));
+            if (result.Ret == false)
+            {
+                ShowErrorTips(result.Reason);
+            }
+
+        }
+        ExportCommandDone exec(List<ResourceInfo> totalInfo, SequenceCommand command)
+        {
+            ExportCommandDone res = null;
+            TypeEventSystem.Register<ExportCommandDone>((done) => {
+                res = done;
+            });
+            TypeEventSystem.Send(new ExportCommand()
+            {
+                TotalResInfo = totalInfo,
+                command = command
+            });
+            return res;
+        }
+        void ShowErrorTips(string reason)
+        {
+            SimplePopupManager.Instance.CreatePopup(reason);
+            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
+            SimplePopupManager.Instance.ShowPopup();
         }
     }
 }

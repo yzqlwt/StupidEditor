@@ -3,7 +3,6 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using QFramework;
     using UnityEngine;
@@ -14,7 +13,13 @@
     {
         public static string CocosStudio = "CocosStudio(不合图不做处理)";
         public static string TexturePackage = "进行合图(适用于大部分资源)";
-        public static string UnTexturePackage = "不进行合图(适用于较大的背景图)";
+        public static string None = "不进行合图(适用于较大的背景图)";
+        public static Dictionary<string, string> TagsMap = new Dictionary<string, string>()
+        {
+            { ResourceTag.TexturePackage, "Plist"},
+            { ResourceTag.None, "None"},
+            { ResourceTag.CocosStudio, "Csb"},
+        };
     }
 
     public class ResourceInfo
@@ -31,15 +36,17 @@
             Extension = info.Extension;
             MD5 = info.MD5;
             Time = info.Time;
-        }
+            Tag = info.Tag;
+    }
 
         //
-        public string Tag = "";
+        public string Tag = ResourceTag.TexturePackage;
+        public int Width = 0;
+        public int Height = 0;
     }
 
     public class ResourceItem : MonoBehaviour, IPointerClickHandler
     {
-        private ResLoader mResLoader;
         public Text FileName;
         public Image FileImage;
         public Image TagImage;
@@ -47,7 +54,6 @@
         // Start is called before the first frame update
         void Start()
         {
-            mResLoader = ResLoader.Allocate();
         }
 
         public void SetItemInfo(FileInfo info)
@@ -74,10 +80,17 @@
             else if (info.Extension == ".swf")
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/swf.png";
+                info.Tag = ResourceTag.None;
+            }
+            else if (info.Extension == ".csb")
+            {
+                path = @"file://" + Application.streamingAssetsPath + "/texture/csb.png";
+                info.Tag = ResourceTag.CocosStudio;
             }
             else
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/unknown.png";
+                info.Tag = ResourceTag.None;
             }
 #pragma warning disable CS0618 // 类型或成员已过时
             var www = new WWW(path);
@@ -96,6 +109,8 @@
                     var x = size.y / tex.height * tex.width;
                     FileImage.GetComponent<RectTransform>().sizeDelta = new Vector2(x, size.y);
                 }
+                ResInfo.Width = tex.width;
+                ResInfo.Height = tex.height;
                 Sprite temp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
                 FileImage.sprite = temp;
             }
@@ -108,17 +123,14 @@
             if(info.Tag == ResourceTag.TexturePackage)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/green.png";
-                TagImage.gameObject.SetActive(false);
             }
             else if(info.Tag == ResourceTag.CocosStudio)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/red.png";
-                TagImage.gameObject.SetActive(true);
             }
-            else if (info.Tag == ResourceTag.UnTexturePackage)
+            else if (info.Tag == ResourceTag.None)
             {
                 path = @"file://" + Application.streamingAssetsPath + "/texture/subscript/yellow.png";
-                TagImage.gameObject.SetActive(true);
             }
 #pragma warning disable CS0618 // 类型或成员已过时
             var www = new WWW(path);
@@ -138,11 +150,7 @@
 
         void Destroy()
         {
-            // 释放所有本脚本加载过的资源
-            // 释放只是释放资源的引用
-            // 当资源的引用数量为 0 时，会进行真正的资源卸载操作
-            mResLoader.Recycle2Cache();
-            mResLoader = null;
+
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -151,12 +159,12 @@
             {
                 if(Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor)
                 {
-                    ProcessStartInfo psi = new ProcessStartInfo();
+                    System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
                     psi.FileName = "open";
                     psi.Arguments = ResInfo.FileFullName;
                     psi.UseShellExecute = false;
                     psi.RedirectStandardOutput = true;
-                    Process p = Process.Start(psi);
+                    System.Diagnostics.Process p = System.Diagnostics.Process.Start(psi);
                     string strOutput = p.StandardOutput.ReadToEnd();
                     p.WaitForExit();
                     UnityEngine.Debug.Log(strOutput);
@@ -191,8 +199,8 @@
             ResInfo.FileName = name;
             FileName.text = name;
             System.IO.FileInfo file = new System.IO.FileInfo(ResInfo.FileFullName);
-            file.MoveTo(file.DirectoryName+"/"+name);
             ResInfo.FileFullName = file.DirectoryName + "/" + name;
+            file.MoveTo(file.DirectoryName + "/" + name);
         }
         public void SetTag(string ret)
         {
