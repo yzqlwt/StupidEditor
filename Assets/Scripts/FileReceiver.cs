@@ -1,4 +1,7 @@
-﻿namespace StupidEditor
+﻿using B83.Win32;
+using SimplePopup;
+
+namespace StupidEditor
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -13,6 +16,13 @@
     {
         public string Path;
         public string Tag;
+        public POINT Point = new POINT(0,0);
+    }
+
+    public enum DragDropType
+    {
+        Add,
+        Replace,
     }
     public class FileInfo
     {
@@ -22,6 +32,7 @@
         public string MD5;
         public DateTime Time;
         public string Tag;
+        public DragDropType DropType;
     }
 
     public class FileReceiver : MonoBehaviour
@@ -32,49 +43,35 @@
             DirTools.ClearTempPath();
             TypeEventSystem.Register<FileDragIn>((fileDragIn)=> {
                 var path = fileDragIn.Path;
-                if (File.Exists(path))
+                System.IO.FileInfo file = new System.IO.FileInfo(path);
+                var tempPath = DirTools.GetTempPath();
+                File.Copy(file.FullName, tempPath + "/" + file.Name, true);
+                var md5Code = GetMD5HashFromFile(path);
+                if (md5Code == null)
                 {
-                    System.IO.FileInfo file = new System.IO.FileInfo(path);
-                    var tempPath = DirTools.GetTempPath();
-                    File.Copy(file.FullName, tempPath + "/" + file.Name, true);
-                    var md5Code = GetMD5HashFromFile(path);
-                    TypeEventSystem.Send(new FileInfo()
-                    {
-                        FileName = file.Name,
-                        FileFullName = tempPath + "/" + file.Name,
-                        Extension = file.Extension,
-                        Time = DateTime.Now,
-                        MD5 = md5Code,
-                        Tag = fileDragIn.Tag
-                    });
+                    SimplePopupManager.Instance.CreatePopup(string.Format("{0}可能被占用",fileDragIn.Path));
+                    SimplePopupManager.Instance.AddButton("朕知道了", delegate {  });
+                    SimplePopupManager.Instance.ShowPopup();
+                    return;
                 }
-                else if (Directory.Exists(path))
+                TypeEventSystem.Send(new FileInfo()
                 {
-                    var allFiles = Directory.GetFiles(path, "*");
-                    var isCsb = allFiles.ToList<string>().Find((file) => {
-                        return file.EndsWith(".csb");
-                    }) != null;
-                    Directory.GetFiles(path, "*").ForEach((file) => {
-                        TypeEventSystem.Send(new FileDragIn()
-                        {
-                            Path = file,
-                            Tag  = isCsb ? ResourceTag.CocosStudio : ResourceTag.TexturePackage
-                        });
-                    });
-
-                }
-                else
-                {
-                    Debug.LogError("ERROR FileDragIn"+ path);
-                }
-
-
+                    FileName = file.Name,
+                    FileFullName = tempPath + "/" + file.Name,
+                    Extension = file.Extension,
+                    Time = DateTime.Now,
+                    MD5 = md5Code,
+                    Tag = fileDragIn.Tag,
+                    DropType = fileDragIn.Point.x < 680 ? DragDropType.Add : DragDropType.Replace,
+                });
             });
-            if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+            if(Application.platform == RuntimePlatform.WindowsEditor )
             {
                 TypeEventSystem.Send(new FileDragIn()
                 {
-                    Path = @"C:\Users\yzqlwt\Pictures\互动2-1_slices"
+                    Path = @"C:\Users\yzqlw\Desktop\ShadowsocksR-win-4.9.0\ShadowsocksR-dotnet4.0.exe",
+                    Tag  = ResourceTag.TexturePackage,
+                    Point = new POINT(400, 300)
                 });
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
@@ -110,7 +107,7 @@
             }
             catch (Exception ex)
             {
-                throw new Exception("GetMD5HashFromFile() fail,error:" + ex.Message);
+                return null;
             }
         }
     }

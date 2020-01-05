@@ -49,6 +49,7 @@ namespace QFramework.Example
 
         public GameObject ResourceItem;
         public Transform ScrollViewContent;
+        public Transform Inspector;
         protected override void ProcessMsg(int eventId, QFramework.QMsg msg)
         {
             throw new System.NotImplementedException();
@@ -80,9 +81,32 @@ namespace QFramework.Example
         {
             TypeEventSystem.Register<FileInfo>((fileInfo) =>
             {
-                var Item = Instantiate(ResourceItem, ScrollViewContent);
-                Item.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
-                Item.GetComponent<Toggle>().group = ScrollViewContent.GetComponent<ToggleGroup>();
+                if (fileInfo.DropType == DragDropType.Add)
+                {
+                    var Item = Instantiate(ResourceItem, ScrollViewContent);
+                    Item.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
+                    Item.GetComponent<Toggle>().group = ScrollViewContent.GetComponent<ToggleGroup>(); 
+                }
+                else
+                {
+                    var inspector = Inspector.GetComponent<Inspector>();
+                    if (inspector.Mask.activeSelf)
+                    {
+                        ///替换item
+                        SimplePopupManager.Instance.CreatePopup("确定替换？");
+                        SimplePopupManager.Instance.AddButton("嗯嗯", delegate {  });
+                        SimplePopupManager.Instance.AddButton("算了算了", delegate {  });
+                        SimplePopupManager.Instance.ShowPopup();
+                    }
+                    else
+                    {
+                        SimplePopupManager.Instance.CreatePopup("没有选中的资源，无法进行替换");
+                        SimplePopupManager.Instance.AddButton("朕晓得了", delegate {  });
+                        SimplePopupManager.Instance.ShowPopup();
+                    }
+                }
+
+
             });
         }
 

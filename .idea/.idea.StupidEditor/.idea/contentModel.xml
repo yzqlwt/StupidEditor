@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\yzqlw\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\yzqlw\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_StupidEditor.254272945.00" t="ExcludeRecursive" />
+    <e p="C:\Users\yzqlw\Documents\WorkSpace\StupidEditor" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="QFramework" t="Include">
+          <e p="Framework" t="Include">
+            <e p="0.PackageKit" t="Include">
+              <e p="BindKit" t="Include">
+                <e p="Framework" t="Include">
+                  <e p="Binding" t="Include">
+                    <e p="AbstractBinding.cs" t="Include" />
+                    <e p="Binders" t="Include">
+                      <e p="IBinder.cs" t="Include" />
+                      <e p="StandardBinder.cs" t="Include" />
+                    </e>
+                    <e p="Binding.cs" t="Include" />
+                    <e p="BindingDescription.cs" t="Include" />
+                    <e p="BindingException.cs" t="Include" />
+                    <e p="BindingFactory.cs" t="Include" />
+                    <e p="BindingMode.cs" t="Include" />
+                    <e p="BindingServiceBundle.cs" t="Include" />
+                    <e p="Builder" t="Include">
+                      <e p="BindingBuilder.cs" t="Include" />
+                      <e p="BindingBuilderBase.cs" t="Include" />
+                      <e p="BindingSet.cs" t="Include" />
+                      <e p="IBindingBuilder.cs" t="Include" />
+                    </e>
+                    <e p="Commands" t="Include">
+                      <e p="ParameterWrapCommand.cs" t="Include" />
+                    </e>
+                    <e p="Contexts" t="Include">
+                      <e p="BindingContext.cs" t="Include" />
+                      <e p="BindingContextLifecycle.cs" t="Include" />
+                      <e p="IBindingContext.cs" t="Include" />
+                    </e>
+                    <e p="Converters" t="Include">
+                      <e p="AbstractConverter.cs" t="Include" />
+                      <e p="ConverterRegistry.cs" t="Include" />
+                      <e p="GenericConverter.cs" t="Include" />
+                      <e p="IConverter.cs" t="Include" />
+                      <e p="IConverterRegistry.cs" t="Include" />
+                    </e>
+                    <e p="Expressions" t="Include">
+                      <e p="EvaluatingVisitor.cs" t="Include" />
+                      <e p="ExpressionExtensions.cs" t="Include" />
+                      <e p="ExpressionVisitor.cs" t="Include" />
+                    </e>
+                    <e p="IBinding.cs" t="Include" />
+                    <e p="IBindingFactory.cs" t="Include" />
+                    <e p="IInvoker.cs" t="Include" />
+                    <e p="Parameters" t="Include">
+                      <e p="ParameterWrapConverter.cs" t="Include" />
+                      <e p="ParameterWrapDelegateInvoker.cs" t="Include" />
+                      <e p="ParameterWrapProxyInvoker.cs" t="Include" />
+                      <e p="ParameterWrapScriptInvoker.cs" t="Include" />
+                    </e>
+                    <e p="Paths" t="Include">
+                      <e p="ExpressionPathFinder.cs" t="Include" />
+                      <e p="IExpressionPathFinder.cs" t="Include" />
+                      <e p="IPathParser.cs" t="Include" />
+                      <e p="Path.cs" t="Include" />
+                      <e p="PathExpressionVisitor.cs" t="Include" />
+                      <e p="PathParser.cs" t="Include" />
+                      <e p="PathToken.cs" t="Include" />
+                      <e p="TextPathParser.cs" t="Include" />
+                      <e p="TypeFinderUtils.cs" t="Include" />
+                    </e>
+                    <e p="Proxy" t="Include">
+                      <e p="BindingProxyBase.cs" t="Include" />
+                      <e p="IBindingProxy.cs" t="Include" />
+                      <e p="IModifiable.cs" t="Include" />
+                      <e p="INotifiable.cs" t="Include" />
+                      <e p="IObtainable.cs" t="Include" />
+                      <e p="IScriptInvoker.cs" t="Include" />
+                      <e p="Sources" t="Include">
+                        <e p="EmptySourceProxy.cs" t="Include" />
+                        <e p="Expressions" t="Include">
+                          <e p="DelegateExtensions.cs" t="Include" />
+                          <e p="ExpressionSourceDescription.cs" t="Include" />
+                          <e p="ExpressionSourceProxy.cs" t="Include" />
+                          <e p="ExpressionSourceProxyFactory.cs" t="Include" />
+                          <e p="IExpressionSourceProxy.cs" t="Include" />
+                        </e>
+                        <e p="ISourceProxy.cs" t="Include" />
+                        <e p="ISourceProxyFactory.cs" t="Include" />
+                        <e p="ISourceProxyFactoryRegistry.cs" t="Include" />
+                        <e p="Object" t="Include">
+                          <e p="ChainedObjectSourceProxy.cs" t="Include" />
+                          <e p="EventNodeProxy.cs" t="Include" />
+                          <e p="FieldNodeProxy.cs" t="Include" />
+                          <e p="INodeProxyFactory.cs" t="Include" />
+                          <e p="INodeProxyFactoryRegister.cs" t="Include" />
+                          <e p="InteractionNodeProxy.cs" t="Include" />
+                          <e p="ItemNodeProxy.cs" t="Include" />
+                          <e p="MethodNodeProxy.cs" t="Include" />
+                          <e p="ObjectSourceDescription.cs" t="Include" />
+                          <e p="ObjectSourceProxyFactory.cs" t="Include" />
+                          <e p="ObservableNodeProxy.cs" t="Include" />
+                          <e p="PropertyNodeProxy.cs" t="Include" />
+                          <e p="UniversalNodeProxyFactory.cs" t="Include" />
+                        </e>
+                        <e p="SourceDescription.cs" t="Include" />
+                        <e p="SourceProxyBase.cs" t="Include" />
+                        <e p="SourceProxyFactory.cs" t="Include" />
+                        <e p="Text" t="Include">
+                          <e p="LiteralSourceDescription.cs" t="Include" />
+                          <e p="LiteralSourceProxy.cs" t="Include" />
+                          <e p="LiteralSourceProxyFactory.cs" t="Include" />
+                          <e p="ObservableLiteralSourceProxy.cs" t="Include" />
+                        </e>
+                        <e p="TypedSourceProxyFactory.cs" t="Include" />
+                      </e>
+                      <e p="Targets" t="Include">
+                        <e p="ITargetProxy.cs" t="Include" />
+                        <e p="ITargetProxyFactory.cs" t="Include" />
+                        <e p="ITargetProxyFactoryRegister.cs" t="Include" />
+                        <e p="TargetProxyBase.cs" t="Include" />
+                        <e p="TargetProxyFactory.cs" t="Include" />
+                        <e p="UGUI" t="Include">
+                          <e p="UnityEventExtentions.cs" t="Include" />
+                          <e p="UnityEventProxy.cs" t="Include" />
+                          <e p="UnityFieldProxy.cs" t="Include" />
+                          <e p="UnityPropertyProxy.cs" t="Include" />
+                          <e p="UnityTargetProxyFactory.cs" t="Include" />
+                        </e>
+                        <e p="Universal" t="Include">
+                          <e p="EventTargetProxy.cs" t="Include" />
+                          <e p="FieldTargetProxy.cs" t="Include" />
+                          <e p="InteractionTargetProxy.cs" t="Include" />
+                          <e p="MethodTargetProxy.cs" t="Include" />
+                          <e p="ObservableTargetProxy.cs" t="Include" />
+                          <e p="PropertyTargetProxy.cs" t="Include" />
+                          <e p="UniversalTargetProxyFactory.cs" t="Include" />
+                        </e>
+                      </e>
+                    </e>
+                    <e p="Reflection" t="Include">
+                      <e p="IProxyEventInfo.cs" t="Include" />
+                      <e p="IProxyFactory.cs" t="Include" />
+                      <e p="IProxyFieldInfo.cs" t="Include" />
+                      <e p="IProxyInvoker.cs" t="Include" />
+                      <e p="IProxyItemInfo.cs" t="Include" />
+                      <e p="IProxyMemberInfo.cs" t="Include" />
+                      <e p="IProxyMethodInfo.cs" t="Include" />
+                      <e p="IProxyObject.cs" t="Include" />
+                      <e p="IProxyPropertyInfo.cs" t="Include" />
+                      <e p="IProxyRegistry.cs" t="Include" />
+                      <e p="IProxyType.cs" t="Include" />
+                      <e p="ProxyEventInfo.cs" t="Include" />
+                      <e p="ProxyFactory.cs" t="Include" />
+                      <e p="ProxyFieldInfo.cs" t="Include" />
+                      <e p="ProxyInvoker.cs" t="Include" />
+                      <e p="ProxyItemInfo.cs" t="Include" />
+                      <e p="ProxyMethodInfo.cs" t="Include" />
+                      <e p="ProxyPropertyInfo.cs" t="Include" />
+                      <e p="ProxyType.cs" t="Include" />
+                      <e p="ProxyTypeExtentions.cs" t="Include" />
+                      <e p="StaticProxyMethodInfo.cs" t="Include" />
+                      <e p="StaticProxyPropertyInfo.cs" t="Include" />
+                      <e p="WeakProxyInvoker.cs" t="Include" />
+                    </e>
+                    <e p="Registry" t="Include">
+                      <e p="IKeyValueRegistry.cs" t="Include" />
+                      <e p="KeyValueRegistry.cs" t="Include" />
+                    </e>
+                    <e p="TypeExtensions.cs" t="Include" />
+                    <e p="UnityProxyRegister.cs" t="Include" />
+                  </e>
+                  <e p="Commands" t="Include">
+                    <e p="CommandBase.cs" t="Include" />
+                    <e p="CompositeCommand.cs" t="Include" />
+                    <e p="IActiveAware.cs" t="Include" />
+                    <e p="ICommand.cs" t="Include" />
+                    <e p="RelayCommand.cs" t="Include" />
+                    <e p="SimpleCommand.cs" t="Include" />
+                  </e>
+                  <e p="EditorExecutors.cs" t="Include" />
+                  <e p="Observables" t="Include">
+                    <e p="INotifyCollectionChanged.cs" t="Include" />
+                    <e p="IObservableProperty.cs" t="Include" />
+                    <e p="NotifyCollectionChangedEventArgs.cs" t="Include" />
+                    <e p="ObservableDictionary.cs" t="Include" />
+                    <e p="ObservableList.cs" t="Include" />
+                    <e p="ObservableObject.cs" t="Include" />
+                    <e p="ObservableProperty.cs" t="Include" />
+                  </e>
+                  <e p="TypeExtensions.cs" t="Include" />
+                  <e p="ViewModels" t="Include">
+                    <e p="IViewModel.cs" t="Include" />
+                    <e p="ViewModelBase.cs" t="Include" />
+                  </e>
+                  <e p="WeakDelegateExtensions.cs" t="Include" />
+                </e>
+                <e p="Log" t="Include">
+                  <e p="DefaultLogFactory.cs" t="Include" />
+                  <e p="ILog.cs" t="Include" />
+                  <e p="ILogFactory.cs" t="Include" />
+                  <e p="Level.cs" t="Include" />
+                  <e p="LogManager.cs" t="Include" />
+                </e>
+                <e p="QFramework.BindKit.cs" t="Include" />
+                <e p="Readme.txt" t="Include" />
+              </e>
+              <e p="Editor" t="Include">
+                <e p="Framework" t="Include">
+                  <e p="DialogUtils.cs" t="Include" />
+                  <e p="EditorHttp.cs" t="Include" />
+                  <e p="EditorKit" t="Include">
+                    <e p="LabelViewWithRect.cs" t="Include" />
+                  </e>
+                  <e p="EditorLifecycle.cs" t="Include" />
+                  <e p="PackageApplication.cs" t="Include" />
+                </e>
+                <e p="Login" t="Include">
+                  <e p="Command" t="Include">
+                    <e p="IPackageLoginCommand.cs" t="Include" />
+                    <e p="OpenRegisterView.cs" t="Include" />
+                    <e p="PackageLoginStartUpCommand.cs" t="Include" />
+                  </e>
+                  <e p="Event" t="Include">
+                    <e p="LoginSucceed.cs" t="Include" />
+                  </e>
+                  <e p="Model" t="Include">
+                    <e p="PackageKitLoginModel.cs" t="Include" />
+                  </e>
+                  <e p="PackageKitLoginApp.cs" t="Include" />
+                  <e p="Service" t="Include">
+                    <e p="IPackageLoginService.cs" t="Include" />
+                    <e p="PacakgeLoginService.cs" t="Include" />
+                  </e>
+                  <e p="View" t="Include">
+                    <e p="LoginView.cs" t="Include" />
+                    <e p="PackageKitLoginView.cs" t="Include" />
+                    <e p="RegisterView.cs" t="Include" />
+                  </e>
+                  <e p="ViewModel" t="Include">
+                    <e p="LoginViewModel.cs" t="Include" />
+                    <e p="PacakgeKitLoginViewModel.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="PackageMaker" t="Include">
+                  <e p="Service" t="Include">
+                    <e p="UploadPackage.cs" t="Include" />
+                  </e>
+                  <e p="View" t="Include">
+                    <e p="PackageMakerView.cs" t="Include" />
+                  </e>
+                  <e p="ViewModel" t="Include">
+                    <e p="PackageMakerViewModel.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="PackageManager" t="Include">
+                  <e p="Command" t="Include">
+                    <e p="PackageManagerStartUpCommand.cs" t="Include" />
+                  </e>
+                  <e p="Model" t="Include">
+                    <e p="PackageData.cs" t="Include" />
+                    <e p="PackageManagerModel.cs" t="Include" />
+                    <e p="PackageRepository.cs" t="Include" />
+                  </e>
+                  <e p="PackageManagerApp.cs" t="Include" />
+                  <e p="Service" t="Include">
+                    <e p="IPackageManagerServer.cs" t="Include" />
+                    <e p="PackageManagerServer.cs" t="Include" />
+                  </e>
+                  <e p="View" t="Include">
+                    <e p="PackageManagerView.cs" t="Include" />
+                    <e p="PackageView.cs" t="Include" />
+                  </e>
+                  <e p="ViewModel" t="Include">
+                    <e p="PackageManagerViewModel.cs" t="Include" />
+                    <e p="PackageViewModel.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="QFramework.PackageKit.cs" t="Include" />
+              </e>
+              <e p="IOC" t="Include">
+                <e p="QFramework.IOC.cs" t="Include" />
+              </e>
+              <e p="TypeEventSystem" t="Include">
+                <e p="QFramework.TypeEventSystem.cs" t="Include" />
+              </e>
+            </e>
+            <e p="1.Core" t="Include">
+              <e p="ActionKit" t="Include">
+                <e p="QFramework.ActionKit.cs" t="Include" />
+              </e>
+              <e p="CSharpExtension" t="Include">
+                <e p="QFramework.CSharpExtension.cs" t="Include" />
+              </e>
+              <e p="Device" t="Include">
+                <e p="QFramework.Device.cs" t="Include" />
+              </e>
+              <e p="FSM" t="Include">
+                <e p="QFramework.FSM.cs" t="Include" />
+              </e>
+              <e p="Pool" t="Include">
+                <e p="QFramework.Pool.cs" t="Include" />
+              </e>
+              <e p="RefCounter" t="Include">
+                <e p="QFramework.RefCounter.cs" t="Include" />
+              </e>
+              <e p="Singleton" t="Include">
+                <e p="QFramework.Singleton.cs" t="Include" />
+              </e>
+            </e>
+            <e p="2.ResKit" t="Include">
+              <e p="Editor" t="Include">
+                <e p="AssetBundleExporter.cs" t="Include" />
+                <e p="BuildScript.cs" t="Include" />
+                <e p="ResKitAssetsMenu.cs" t="Include" />
+                <e p="ResKitEditorWindow.cs" t="Include" />
+                <e p="ResKitInfoGenerator.cs" t="Include" />
+              </e>
+              <e p="Runtime" t="Include">
+                <e p="DataTable" t="Include">
+                  <e p="AssetData.cs" t="Include" />
+                  <e p="AssetDataGroup.cs" t="Include" />
+                  <e p="EditorRuntimeAssetDataCollector.cs" t="Include" />
+                  <e p="ResDatas.cs" t="Include" />
+                </e>
+                <e p="Dependency.ResKit.Pool.cs" t="Include" />
+                <e p="Dependency.ResKit.RefCount.cs" t="Include" />
+                <e p="DisposableObject.cs" t="Include" />
+                <e p="FileMgr.cs" t="Include" />
+                <e p="FilePath.cs" t="Include" />
+                <e p="ICSharpCode.SharpZipLib" t="Include">
+                  <e p="BZip2" t="Include">
+                    <e p="BZip2.cs" t="Include" />
+                    <e p="BZip2Constants.cs" t="Include" />
+                    <e p="BZip2Exception.cs" t="Include" />
+                    <e p="BZip2InputStream.cs" t="Include" />
+                    <e p="BZip2OutputStream.cs" t="Include" />
+                  </e>
+                  <e p="Checksum" t="Include">
+                    <e p="Adler32.cs" t="Include" />
+                    <e p="BZip2Crc.cs" t="Include" />
+                    <e p="Crc32.cs" t="Include" />
+                    <e p="IChecksum.cs" t="Include" />
+                  </e>
+                  <e p="Core" t="Include">
+                    <e p="FileSystemScanner.cs" t="Include" />
+                    <e p="INameTransform.cs" t="Include" />
+                    <e p="IScanFilter.cs" t="Include" />
+                    <e p="NameFilter.cs" t="Include" />
+                    <e p="PathFilter.cs" t="Include" />
+                    <e p="StreamUtils.cs" t="Include" />
+                    <e p="WindowsPathUtils.cs" t="Include" />
+                  </e>
+                  <e p="Encryption" t="Include">
+                    <e p="PkzipClassic.cs" t="Include" />
+                    <e p="ZipAESStream.cs" t="Include" />
+                    <e p="ZipAESTransform.cs" t="Include" />
+                  </e>
+                  <e p="GZip" t="Include">
+                    <e p="GZip.cs" t="Include" />
+                    <e p="GZipConstants.cs" t="Include" />
+                    <e p="GZipException.cs" t="Include" />
+                    <e p="GzipInputStream.cs" t="Include" />
+                    <e p="GzipOutputStream.cs" t="Include" />
+                  </e>
+                  <e p="Lzw" t="Include">
+                    <e p="LzwConstants.cs" t="Include" />
+                    <e p="LzwException.cs" t="Include" />
+                    <e p="LzwInputStream.cs" t="Include" />
+                  </e>
+                  <e p="SharpZipBaseException.cs" t="Include" />
+                  <e p="Tar" t="Include">
+                    <e p="InvalidHeaderException.cs" t="Include" />
+                    <e p="TarArchive.cs" t="Include" />
+                    <e p="TarBuffer.cs" t="Include" />
+                    <e p="TarEntry.cs" t="Include" />
+                    <e p="TarException.cs" t="Include" />
+                    <e p="TarHeader.cs" t="Include" />
+                    <e p="TarInputStream.cs" t="Include" />
+                    <e p="TarOutputStream.cs" t="Include" />
+                  </e>
+                  <e p="Zip" t="Include">
+                    <e p="Compression" t="Include">
+                      <e p="Deflater.cs" t="Include" />
+                      <e p="DeflaterConstants.cs" t="Include" />
+                      <e p="DeflaterEngine.cs" t="Include" />
+                      <e p="DeflaterHuffman.cs" t="Include" />
+                      <e p="DeflaterPending.cs" t="Include" />
+                      <e p="Inflater.cs" t="Include" />
+                      <e p="InflaterDynHeader.cs" t="Include" />
+                      <e p="InflaterHuffmanTree.cs" t="Include" />
+                      <e p="PendingBuffer.cs" t="Include" />
+                      <e p="Streams" t="Include">
+                        <e p="DeflaterOutputStream.cs" t="Include" />
+                        <e p="InflaterInputStream.cs" t="Include" />
+                        <e p="OutputWindow.cs" t="Include" />
+                        <e p="StreamManipulator.cs" t="Include" />
+                      </e>
+                    </e>
+                    <e p="FastZip.cs" t="Include" />
+                    <e p="IEntryFactory.cs" t="Include" />
+                    <e p="WindowsNameTransform.cs" t="Include" />
+                    <e p="ZipConstants.cs" t="Include" />
+                    <e p="ZipEntry.cs" t="Include" />
+                    <e p="ZipEntryFactory.cs" t="Include" />
+                    <e p="ZipException.cs" t="Include" />
+                    <e p="ZipExtraData.cs" t="Include" />
+                    <e p="ZipFile.cs" t="Include" />
+                    <e p="ZipHelperStream.cs" t="Include" />
+                    <e p="ZipInputStream.cs" t="Include" />
+                    <e p="ZipNameTransform.cs" t="Include" />
+                    <e p="ZipOutputStream.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="IEnumeratorTask.cs" t="Include" />
+                <e p="Platform.cs" t="Include" />
+                <e p="Res" t="Include">
+                  <e p="AssetBundleRes.cs" t="Include" />
+                  <e p="AssetRes.cs" t="Include" />
+                  <e p="InternalRes.cs" t="Include" />
+                  <e p="IRes.cs" t="Include" />
+                  <e p="LocalImageRes.cs" t="Include" />
+                  <e p="NetImageRes.cs" t="Include" />
+                  <e p="SceneRes.cs" t="Include" />
+                </e>
+                <e p="Res.cs" t="Include" />
+                <e p="ResDownloader" t="Include">
+                  <e p="HttpDownloaderMgr.cs" t="Include" />
+                  <e p="ResDownloader.cs" t="Include" />
+                </e>
+                <e p="ResFactory.cs" t="Include" />
+                <e p="ResKit.cs" t="Include" />
+                <e p="ResKitUtil.cs" t="Include" />
+                <e p="ResLoader" t="Include">
+                  <e p="DefaultLoaderStrategy.cs" t="Include" />
+                  <e p="IResLoader.cs" t="Include" />
+                  <e p="IResLoaderStrategy.cs" t="Include" />
+                  <e p="ResLoader.cs" t="Include" />
+                </e>
+                <e p="ResMgr.cs" t="Include" />
+                <e p="SerializeHelper.cs" t="Include" />
+                <e p="ZipMgr.cs" t="Include" />
+                <e p="ZipUtil.cs" t="Include" />
+              </e>
+            </e>
+            <e p="3.UIKit" t="Include">
+              <e p="0.CodeGen" t="Include">
+                <e p="Editor" t="Include">
+                  <e p="CodeGen" t="Include">
+                    <e p="CodeTemplates" t="Include">
+                      <e p="IClassTemplate.cs" t="Include" />
+                      <e p="IMemberGenerator.cs" t="Include" />
+                      <e p="IMemberItemGenerator.cs" t="Include" />
+                      <e p="impl" t="Include">
+                        <e p="_ITEMTYPE_.cs" t="Include" />
+                        <e p="_TEMPLATETYPE_.cs" t="Include" />
+                        <e p="AsAbstract.cs" t="Include" />
+                        <e p="AsOverride.cs" t="Include" />
+                        <e p="AsPartial.cs" t="Include" />
+                        <e p="AsStatic.cs" t="Include" />
+                        <e p="AsVirtual.cs" t="Include" />
+                        <e p="ClassTemplateType.cs" t="Include" />
+                        <e p="CodeDomHelpers.cs" t="Include" />
+                        <e p="CodeFileGenerator.cs" t="Include" />
+                        <e p="CodeGenerator.cs" t="Include" />
+                        <e p="DesignerGeneratorFactory.cs" t="Include" />
+                        <e p="EnumCodeGenerator.cs" t="Include" />
+                        <e p="EnumDataGeneratorFactory.cs" t="Include" />
+                        <e p="FileGeneratorBase.cs" t="Include" />
+                        <e p="ForceBaseType.cs" t="Include" />
+                        <e p="ForEach.cs" t="Include" />
+                        <e p="GenerateConstructor.cs" t="Include" />
+                        <e p="GenerateMember.cs" t="Include" />
+                        <e p="GenerateMethod.cs" t="Include" />
+                        <e p="GenerateProperty.cs" t="Include" />
+                        <e p="GeneratorSettings.cs" t="Include" />
+                        <e p="GenericNodeGenerator.cs" t="Include" />
+                        <e p="ICodeTemplateEvents.cs" t="Include" />
+                        <e p="If.cs" t="Include" />
+                        <e p="IfNot.cs" t="Include" />
+                        <e p="Inside.cs" t="Include" />
+                        <e p="InsideAll.cs" t="Include" />
+                        <e p="ITemplateClassGenerator.cs" t="Include" />
+                        <e p="ITemplateCustomFilename.cs" t="Include" />
+                        <e p="LambdaMemberGenerator.cs" t="Include" />
+                        <e p="MemberGenerator.cs" t="Include" />
+                        <e p="MemberGeneratorLocation.cs" t="Include" />
+                        <e p="MemberItemGenerator.cs" t="Include" />
+                        <e p="NamespacesFromItems.cs" t="Include" />
+                        <e p="OutputGenerator.cs" t="Include" />
+                        <e p="RequiresNamespace.cs" t="Include" />
+                        <e p="TemplateAttribute.cs" t="Include" />
+                        <e p="TemplateClass.cs" t="Include" />
+                        <e p="TemplateClassGenerator.cs" t="Include" />
+                        <e p="TemplateComplete.cs" t="Include" />
+                        <e p="TemplateContext.cs" t="Include" />
+                        <e p="TemplateException.cs" t="Include" />
+                        <e p="TemplateLocation.cs" t="Include" />
+                        <e p="TemplateMemberResult.cs" t="Include" />
+                        <e p="TemplateSetup.cs" t="Include" />
+                        <e p="TypeGeneratorPostProcessor.cs" t="Include" />
+                        <e p="WithAttributes.cs" t="Include" />
+                        <e p="WithField.cs" t="Include" />
+                        <e p="WithLazyField.cs" t="Include" />
+                        <e p="WithMetaInfo.cs" t="Include" />
+                        <e p="WithName.cs" t="Include" />
+                        <e p="WithNameFormat.cs" t="Include" />
+                        <e p="WithObservable.cs" t="Include" />
+                      </e>
+                      <e p="ITemplate.cs" t="Include" />
+                      <e p="ITemplateClass.cs" t="Include" />
+                      <e p="ITypeGeneratorPostProcessor.cs" t="Include" />
+                      <e p="TemplateContext.cs" t="Include" />
+                      <e p="TemplateMember.cs" t="Include" />
+                    </e>
+                    <e p="CompilingSystem.cs" t="Include" />
+                    <e p="JSON.cs" t="Include" />
+                    <e p="RegisteredTemplateGeneratorsFactory.cs" t="Include" />
+                    <e p="Systems" t="Include">
+                      <e p="Attributes" t="Include">
+                        <e p="IAlwaysGenerate.cs" t="Include" />
+                      </e>
+                      <e p="Configuration" t="Include">
+                        <e p="ConfigExtensions.cs" t="Include" />
+                        <e p="ConfigProperty.cs" t="Include" />
+                        <e p="ConfigProxy.cs" t="Include" />
+                        <e p="ConfigurationProxyConfiguration.cs" t="Include" />
+                        <e p="GraphItemAttribute.cs" t="Include" />
+                        <e p="GraphItemConfiguration.cs" t="Include" />
+                        <e p="NodeConfig.cs" t="Include" />
+                        <e p="NodeConfigBase.cs" t="Include" />
+                        <e p="NodeConfigSectionBase.cs" t="Include" />
+                        <e p="NodeGeneratorConfig.cs" t="Include" />
+                        <e p="NodeGeneratorConfigBase.cs" t="Include" />
+                        <e p="NodeInputConfig.cs" t="Include" />
+                        <e p="NodeValidator.cs" t="Include" />
+                        <e p="ProxySection.cs" t="Include" />
+                        <e p="ReferenceSection.cs" t="Include" />
+                        <e p="Section.cs" t="Include" />
+                        <e p="SectionVisibility.cs" t="Include" />
+                        <e p="ValidatorType.cs" t="Include" />
+                      </e>
+                      <e p="Core" t="Include">
+                        <e p="DefaultLogger.cs" t="Include" />
+                        <e p="EventManager.cs" t="Include" />
+                        <e p="IDebugLogger.cs" t="Include" />
+                        <e p="IEventManager.cs" t="Include" />
+                        <e p="IItem.cs" t="Include" />
+                        <e p="InvertApplication.cs" t="Include" />
+                        <e p="ISystemResetEvents.cs" t="Include" />
+                        <e p="ITaskHandler.cs" t="Include" />
+                        <e p="ITreeItem.cs" t="Include" />
+                        <e p="TaskProgress.cs" t="Include" />
+                        <e p="TypeExtensions.cs" t="Include" />
+                      </e>
+                      <e p="Database" t="Include">
+                        <e p="data" t="Include">
+                          <e p="DataRecordPropertyChangedExtensions.cs" t="Include" />
+                          <e p="IDataRecord.cs" t="Include" />
+                          <e p="IDataRecordInserted.cs" t="Include" />
+                          <e p="IDataRecordPropertyBeforeChange.cs" t="Include" />
+                          <e p="IDataRecordPropertyChanged.cs" t="Include" />
+                          <e p="IDataRecordRemoved.cs" t="Include" />
+                          <e p="IRepository.cs" t="Include" />
+                          <e p="IValueItem.cs" t="Include" />
+                        </e>
+                        <e p="IGraphConfiguration.cs" t="Include" />
+                      </e>
+                      <e p="Graphs" t="Include">
+                        <e p="data" t="Include">
+                          <e p="ConnectionData.cs" t="Include" />
+                          <e p="DiagramNodeItem.cs" t="Include" />
+                          <e p="ErrorInfo.cs" t="Include" />
+                          <e p="ErrorInfoExtensions.cs" t="Include" />
+                          <e p="FilterExtensions.cs" t="Include" />
+                          <e p="FilterItem.cs" t="Include" />
+                          <e p="FilterState.cs" t="Include" />
+                          <e p="FlagItem.cs" t="Include" />
+                          <e p="GenericInheritableNode.cs" t="Include" />
+                          <e p="GenericNode.cs" t="Include" />
+                          <e p="GenericNodeChildItem.cs" t="Include" />
+                          <e p="GenericReferenceItem.cs" t="Include" />
+                          <e p="GenericSlot.cs" t="Include" />
+                          <e p="GenericTypedChildItem.cs" t="Include" />
+                          <e p="GraphDataExtensions.cs" t="Include" />
+                          <e p="GraphNode.cs" t="Include" />
+                          <e p="IClassNode.cs" t="Include" />
+                          <e p="IClassTypeNode.cs" t="Include" />
+                          <e p="IConnectable.cs" t="Include" />
+                          <e p="IConnectableProvider.cs" t="Include" />
+                          <e p="IDiagramNode.cs" t="Include" />
+                          <e p="IDiagramNodeItem.cs" t="Include" />
+                          <e p="IFilterItem.cs" t="Include" />
+                          <e p="IGraphData.cs" t="Include" />
+                          <e p="IGraphFilter.cs" t="Include" />
+                          <e p="IGraphItem.cs" t="Include" />
+                          <e p="IInhertable.cs" t="Include" />
+                          <e p="ISelectable.cs" t="Include" />
+                          <e p="ITypedItem.cs" t="Include" />
+                          <e p="NodeColor.cs" t="Include" />
+                          <e p="Types" t="Include">
+                            <e p="IMemberInfo.cs" t="Include" />
+                            <e p="ITypeInfo.cs" t="Include" />
+                            <e p="SystemFieldMemberInfo.cs" t="Include" />
+                            <e p="SystemPropertyMemberInfo.cs" t="Include" />
+                            <e p="SystemTypeInfo.cs" t="Include" />
+                          </e>
+                        </e>
+                        <e p="RegisteredConnection.cs" t="Include" />
+                      </e>
+                      <e p="GraphUI" t="Include">
+                        <e p="InvertGraphEditor.cs" t="Include" />
+                        <e p="ViewModels" t="Include">
+                          <e p="ConnectionViewModel.cs" t="Include" />
+                          <e p="ConnectorDirection.cs" t="Include" />
+                          <e p="ConnectorSide.cs" t="Include" />
+                          <e p="ConnectorViewModel.cs" t="Include" />
+                          <e p="DiagramNodeViewModel.cs" t="Include" />
+                          <e p="DiagramViewModel.cs" t="Include" />
+                          <e p="GraphDesignerNavigationViewModel.cs" t="Include" />
+                          <e p="GraphItemViewModel.cs" t="Include" />
+                          <e p="IConnectionStrategy.cs" t="Include" />
+                          <e p="IGraphLoaded.cs" t="Include" />
+                          <e p="IGraphSelectionEvents.cs" t="Include" />
+                          <e p="INodeItemEvents.cs" t="Include" />
+                          <e p="INothingSelectedEvent.cs" t="Include" />
+                          <e p="InspectorViewModel.cs" t="Include" />
+                          <e p="ItemViewModel.cs" t="Include" />
+                          <e p="NavigationItem.cs" t="Include" />
+                          <e p="NavigationItemState.cs" t="Include" />
+                          <e p="ViewModel.cs" t="Include" />
+                        </e>
+                      </e>
+                    </e>
+                    <e p="uFrameIdentifier.cs" t="Include" />
+                  </e>
+                </e>
+              </e>
+              <e p="1.UI" t="Include">
+                <e p="Editor" t="Include">
+                  <e p="BindInspector.cs" t="Include" />
+                  <e p="CodeGen" t="Include">
+                    <e p="data" t="Include">
+                      <e p="ElementCodeData.cs" t="Include" />
+                      <e p="MarkedObjInfo.cs" t="Include" />
+                      <e p="PanelCodeData.cs" t="Include" />
+                      <e p="UIGraph.cs" t="Include" />
+                    </e>
+                    <e p="Templates" t="Include">
+                      <e p="IBaseTemplate.cs" t="Include" />
+                      <e p="ILRuntimePanelCodeTemplate.cs" t="Include" />
+                      <e p="UIElementCodeTemplate.cs" t="Include" />
+                      <e p="UIPanelDataTemplate.cs" t="Include" />
+                      <e p="UIPanelDesignerTemplate.cs" t="Include" />
+                      <e p="UIPanelTemplate.cs" t="Include" />
+                      <e p="ViewControllerTemplate.cs" t="Include" />
+                    </e>
+                    <e p="UICodeGenerator.cs" t="Include" />
+                    <e p="UIMarkCollector.cs" t="Include" />
+                    <e p="UISerializer.cs" t="Include" />
+                    <e p="Util.cs" t="Include" />
+                  </e>
+                  <e p="UICreateService.cs" t="Include" />
+                  <e p="UIEditorWindow.cs" t="Include" />
+                  <e p="UIKitHierarchyMenu.cs" t="Include" />
+                  <e p="UIKitSettingData.cs" t="Include" />
+                  <e p="UIKitSettingView.cs" t="Include" />
+                  <e p="ViewControllerCode.cs" t="Include" />
+                </e>
+                <e p="Extension" t="Include">
+                  <e p="QUICameraUtil.cs" t="Include" />
+                  <e p="UIPointerDownEventListener.cs" t="Include" />
+                  <e p="UIPointerUpEventListener.cs" t="Include" />
+                  <e p="UIRectTransform.cs" t="Include" />
+                  <e p="UISpriteAnimation.cs" t="Include" />
+                </e>
+                <e p="Script" t="Include">
+                  <e p="Component" t="Include">
+                    <e p="UIComponent.cs" t="Include" />
+                    <e p="UIDefaultPanel.cs" t="Include" />
+                    <e p="UIElement.cs" t="Include" />
+                    <e p="UIElementList.cs" t="Include" />
+                    <e p="UIScrollPage.cs" t="Include" />
+                    <e p="UIScrollPageMark.cs" t="Include" />
+                  </e>
+                  <e p="DontDestroyOnLoad.cs" t="Include" />
+                  <e p="Empty4Raycast.cs" t="Include" />
+                  <e p="Hide.cs" t="Include" />
+                  <e p="Res" t="Include">
+                    <e p="DefaultPanelLoader.cs" t="Include" />
+                    <e p="IPanelLoader.cs" t="Include" />
+                  </e>
+                  <e p="system" t="Include">
+                    <e p="Bind.cs" t="Include" />
+                    <e p="Editor" t="Include">
+                      <e p="ViewControllerInspector.cs" t="Include" />
+                    </e>
+                    <e p="IMark.cs" t="Include" />
+                    <e p="IPanel.cs" t="Include" />
+                    <e p="UIManager.cs" t="Include" />
+                    <e p="UIMark.cs" t="Include" />
+                    <e p="UIPanel.cs" t="Include" />
+                    <e p="UIStack.cs" t="Include" />
+                    <e p="ViewController.cs" t="Include" />
+                  </e>
+                  <e p="UIPanelTester.cs" t="Include" />
+                  <e p="Util" t="Include">
+                    <e p="CollisionTriggerListener.cs" t="Include" />
+                    <e p="UIEffectHelper.cs" t="Include" />
+                    <e p="UIEventListener.cs" t="Include" />
+                  </e>
+                </e>
+              </e>
+              <e p="2.ManagerOfManagers" t="Include">
+                <e p="Framework.cs" t="Include" />
+                <e p="IManager.cs" t="Include" />
+                <e p="QMgrBehaviour.cs" t="Include" />
+                <e p="QMonoBehaviour.cs" t="Include" />
+                <e p="QMsg.cs" t="Include" />
+                <e p="QMsgCenter.cs" t="Include" />
+                <e p="QMsgSpan.cs" t="Include" />
+              </e>
+              <e p="8.Event" t="Include">
+                <e p="QFramework.EventSystem.cs" t="Include" />
+              </e>
+              <e p="Editor" t="Include">
+                <e p="ClearAllData.cs" t="Include" />
+              </e>
+            </e>
+            <e p="4.Audio" t="Include">
+              <e p="0.Timer" t="Include">
+                <e p="BinaryHeap.cs" t="Include" />
+                <e p="IBinaryHeapElement.cs" t="Include" />
+                <e p="TimeItem.cs" t="Include" />
+                <e p="Timer.cs" t="Include" />
+                <e p="TimerHelper.cs" t="Include" />
+                <e p="TimerManager.cs" t="Include" />
+                <e p="TimeUtil.cs" t="Include" />
+              </e>
+              <e p="AudioManager.cs" t="Include" />
+              <e p="AudioUnit.cs" t="Include" />
+              <e p="CoroutineCommand" t="Include">
+                <e p="AudioSoundNode.cs" t="Include" />
+                <e p="AudioVoiceNode.cs" t="Include" />
+              </e>
+              <e p="Msg" t="Include">
+                <e p="AddRetainAudioMsg.cs" t="Include" />
+                <e p="AudioMusicMsg.cs" t="Include" />
+                <e p="AudioSoundMsg.cs" t="Include" />
+                <e p="AudioVoiceMsg.cs" t="Include" />
+                <e p="RemoteRetainAudioMsg.cs" t="Include" />
+              </e>
+            </e>
+          </e>
+          <e p="UIKitDemo_TodoList" t="Include">
+            <e p="Scripts" t="Include">
+              <e p="Model" t="Include">
+                <e p="Models.cs" t="Include" />
+              </e>
+              <e p="UI" t="Include">
+                <e p="UITodoListPanel" t="Include">
+                  <e p="UITodoItem.cs" t="Include" />
+                  <e p="UITodoItemComponents.cs" t="Include" />
+                </e>
+                <e p="UITodoListPanel.cs" t="Include" />
+                <e p="UITodoListPanelComponents.cs" t="Include" />
+              </e>
+            </e>
+          </e>
+        </e>
+        <e p="QFrameworkData" t="Include">
+          <e p="QAssets.cs" t="Include" />
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="data" t="Include">
+            <e p="ConfigTemplate.cs" t="Include" />
+          </e>
+          <e p="DirTools.cs" t="Include" />
+          <e p="FileDrag" t="Include">
+            <e p="B83.Win32.cs" t="Include" />
+            <e p="FileDragAndDrop.cs" t="Include" />
+          </e>
+          <e p="FileReceiver.cs" t="Include" />
+          <e p="GenerateJson.cs" t="Include" />
+          <e p="Inspector.cs" t="Include" />
+          <e p="TextutePackage.cs" t="Include" />
+          <e p="Toolbar" t="Include">
+            <e p="MouseEnter.cs" t="Include" />
+            <e p="ToolButton.cs" t="Include" />
+            <e p="UIPanelConfig.cs" t="Include" />
+          </e>
+          <e p="UI" t="Include">
+            <e p="ResourceItem.cs" t="Include" />
+            <e p="UIPanel.cs" t="Include" />
+            <e p="UIPanel.Designer.cs" t="Include" />
+          </e>
+        </e>
+        <e p="SimplePopup" t="Include">
+          <e p="Scripts" t="Include">
+            <e p="SimplePopupButton.cs" t="Include" />
+            <e p="SimplePopupManager.cs" t="Include" />
+          </e>
+          <e p="SimplePopupExample.cs" t="Include" />
+        </e>
+        <e p="UnityPackages" t="Include">
+          <e p="JsonNetSample" t="Include">
+            <e p="JsonNetSample.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="QFramework.ActionKit.csproj" t="IncludeRecursive" />
+      <e p="QFramework.BindKit.csproj" t="IncludeRecursive" />
+      <e p="QFramework.CSharpExtension.csproj" t="IncludeRecursive" />
+      <e p="QFramework.Device.csproj" t="IncludeRecursive" />
+      <e p="QFramework.EventSystem.csproj" t="IncludeRecursive" />
+      <e p="QFramework.FSM.csproj" t="IncludeRecursive" />
+      <e p="QFramework.IOC.csproj" t="IncludeRecursive" />
+      <e p="QFramework.PackageKit.csproj" t="IncludeRecursive" />
+      <e p="QFramework.Pool.csproj" t="IncludeRecursive" />
+      <e p="QFramework.RefCounter.csproj" t="IncludeRecursive" />
+      <e p="QFramework.ResKit.csproj" t="IncludeRecursive" />
+      <e p="QFramework.Singleton.csproj" t="IncludeRecursive" />
+      <e p="QFramework.TypeEventSystem.csproj" t="IncludeRecursive" />
+      <e p="StupidEditor.sln" t="IncludeFlat" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

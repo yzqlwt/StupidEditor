@@ -12,8 +12,8 @@
     public class ResourceTag
     {
         public static string CocosStudio = "CocosStudio(不合图不做处理)";
-        public static string TexturePackage = "进行合图(适用于大部分资源)";
-        public static string None = "不进行合图(适用于较大的背景图)";
+        public static string TexturePackage = "进行合图(适用于小图片)";
+        public static string None = "不进行合图(适用于背景图,SWF,音效)";
         public static Dictionary<string, string> TagsMap = new Dictionary<string, string>()
         {
             { ResourceTag.TexturePackage, "Plist"},
