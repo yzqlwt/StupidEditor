@@ -104,7 +104,7 @@ public class Inspector : MonoBehaviour
         var ResInfo = mItem.GetComponent<ResourceItem>().ResInfo;
         InputName.text = ResInfo.FileName.Split('.')[0];
         ExtensionText.text = ResInfo.Extension;
-        TimeText.text = ResInfo.Time.ToString();
+        TimeText.text = "Import Time: "+ResInfo.Time.ToString("G");
         var index = Tags.options.FindIndex((option) => {
             return option.text == ResInfo.Tag;
         });
