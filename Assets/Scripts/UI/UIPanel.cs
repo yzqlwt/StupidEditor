@@ -90,13 +90,25 @@ namespace QFramework.Example
                 else
                 {
                     var inspector = Inspector.GetComponent<Inspector>();
-                    if (inspector.Mask.activeSelf)
+                    if (!inspector.Mask.activeSelf)
                     {
                         ///替换item
-                        SimplePopupManager.Instance.CreatePopup("确定替换？");
-                        SimplePopupManager.Instance.AddButton("嗯嗯", delegate {  });
-                        SimplePopupManager.Instance.AddButton("算了算了", delegate {  });
-                        SimplePopupManager.Instance.ShowPopup();
+                        var item = inspector.SelectItem;
+                        if (item)
+                        {
+                            var fileName = fileInfo.FileName;
+                            var resItem = item.GetComponent<ResourceItem>();
+                            fileInfo.FileName = fileName;
+                            resItem.SetItemInfo(fileInfo);
+                            SimplePopupManager.Instance.CreatePopup(string.Format("确定替换 {0}{1}", inspector.InputName.text, inspector.ExtensionText.text));
+                            SimplePopupManager.Instance.AddButton("嗯嗯", delegate {
+ 
+                                resItem.SetFileName(fileName);
+                            });
+                            SimplePopupManager.Instance.AddButton("算了算了", delegate { });
+                            SimplePopupManager.Instance.ShowPopup();
+                        }
+
                     }
                     else
                     {

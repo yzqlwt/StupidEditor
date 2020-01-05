@@ -25,6 +25,9 @@ public class Inspector : MonoBehaviour
     public Dropdown Tags;
 
     private Toggle mItem;
+    public Transform SelectItem { 
+        get {return mItem.transform;}
+    }
     void Start()
     {
         Mask.SetActive(true);

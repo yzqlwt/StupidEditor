@@ -11,6 +11,7 @@ namespace StupidEditor
     using System.IO;
     using System.Text;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class FileDragIn
     {
@@ -75,13 +76,31 @@ namespace StupidEditor
                 });
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
-                TypeEventSystem.Send(new FileDragIn()
-                {
-                    Path = @"/Users/yzqlwt/Desktop/image"
+                var path = @"/Users/yzqlwt/Desktop/image";
+                Directory.GetFiles(path, "*").ForEach((file) => {
+                    TypeEventSystem.Send(new FileDragIn()
+                    {
+                        Path = file,
+                        Tag = ResourceTag.TexturePackage
+                    });
                 });
             }
 
 
+            Invoke("something", 10.0f);
+
+
+        }
+
+
+        void something()
+        {
+            TypeEventSystem.Send(new FileDragIn()
+            {
+                Path = @"/Users/yzqlwt/Desktop/test.jpg",
+                Tag = ResourceTag.TexturePackage,
+                Point = new POINT(900, 20)
+            });
         }
 
         /// <summary>
