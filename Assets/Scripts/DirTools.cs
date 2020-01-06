@@ -48,5 +48,14 @@ namespace StupidEditor
             Directory.Delete(tempPath, true);
             Directory.CreateDirectory(tempPath);
         }
+
+        public static string GetTobePackedTexuresPath(string plistName)
+        {
+            var tempPath = GetTempPath();
+            var path = tempPath + "/ToBePacked/plistName";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
+        }
     }
 }
