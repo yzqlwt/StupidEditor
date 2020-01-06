@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.IO;
+
 namespace QFramework.Example
 {
     using System;
@@ -96,14 +98,28 @@ namespace QFramework.Example
                         var item = inspector.SelectItem;
                         if (item)
                         {
-                            var fileName = fileInfo.FileName;
                             var resItem = item.GetComponent<ResourceItem>();
-                            fileInfo.FileName = fileName;
-                            resItem.SetItemInfo(fileInfo);
+                            if (resItem.ResInfo.Extension != fileInfo.Extension)
+                            {
+                                SimplePopupManager.Instance.CreatePopup(string.Format("不可以把 {0} 替换为 {1}", resItem.ResInfo.Extension, fileInfo.Extension));
+                                SimplePopupManager.Instance.AddButton("Soga", delegate { });
+                                SimplePopupManager.Instance.ShowPopup();
+                                return;
+                            }
                             SimplePopupManager.Instance.CreatePopup(string.Format("确定替换 {0}{1}", inspector.InputName.text, inspector.ExtensionText.text));
                             SimplePopupManager.Instance.AddButton("嗯嗯", delegate {
- 
-                                resItem.SetFileName(fileName);
+                                if (File.Exists(resItem.ResInfo.FileFullName))
+                                {
+                                    var originName = resItem.ResInfo.FileName;
+                                    File.Delete(resItem.ResInfo.FileFullName);
+                                    resItem.SetItemInfo(fileInfo);
+                                    resItem.SetFileName(originName);
+                                }
+                                else
+                                {
+                                    Debug.LogError("替换文件，被替换的文件不存在");
+                                }
+                                Debug.Log(resItem.ResInfo);
                             });
                             SimplePopupManager.Instance.AddButton("算了算了", delegate { });
                             SimplePopupManager.Instance.ShowPopup();

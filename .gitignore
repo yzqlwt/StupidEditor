@@ -6,5 +6,7 @@ Package/
 obj/
 Assets/StreamingAssets/AssetBundles/
 Temp/
+.idea/
+AssetBundles/
 *.sln
 *.csproj

@@ -68,11 +68,14 @@ namespace StupidEditor
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                TypeEventSystem.Send(new FileDragIn()
+                var path = @"C:\Users\yzqlwt\Pictures";
+                Directory.GetFiles(path, "*").ForEach((file) =>
                 {
-                    Path = @"C:\Users\yzqlw\Desktop\ShadowsocksR-win-4.9.0\ShadowsocksR-dotnet4.0.exe",
-                    Tag  = ResourceTag.TexturePackage,
-                    Point = new POINT(400, 300)
+                    TypeEventSystem.Send(new FileDragIn()
+                    {
+                        Path = file,
+                        Tag = ResourceTag.TexturePackage
+                    });
                 });
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
@@ -97,7 +100,7 @@ namespace StupidEditor
         {
             TypeEventSystem.Send(new FileDragIn()
             {
-                Path = @"/Users/yzqlwt/Desktop/test.jpg",
+                Path = @"/Users/yzqlwt/Desktop/favicon.ico",
                 Tag = ResourceTag.TexturePackage,
                 Point = new POINT(900, 20)
             });

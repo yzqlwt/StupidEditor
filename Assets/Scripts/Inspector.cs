@@ -74,6 +74,10 @@ public class Inspector : MonoBehaviour
             {
                 var resourceItem = mItem.GetComponent<ResourceItem>();
                 resourceItem.SetTag(Tags.captionText.text);
+                var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
+                var isCocosStudio = resInfo.Tag == ResourceTag.CocosStudio;
+                InputName.readOnly = isCocosStudio;
+                InputName.textComponent.color = isCocosStudio ? new Color(255, 0, 0) : new Color(0, 0, 0) ;
             }
             else
             {
@@ -96,31 +100,27 @@ public class Inspector : MonoBehaviour
         });
         Tags.ClearOptions();
         Tags.AddOptions(new List<string> {
+            ResourceTag.None,
            ResourceTag.TexturePackage,
-           ResourceTag.None,
            ResourceTag.CocosStudio,
         });
     }
 
     void SetUI()
     {
-        var ResInfo = mItem.GetComponent<ResourceItem>().ResInfo;
-        InputName.text = ResInfo.FileName.Split('.')[0];
-        ExtensionText.text = ResInfo.Extension;
-        TimeText.text = "Import Time: "+ResInfo.Time.ToString("G");
+        var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
+        InputName.text = resInfo.FileName.Split('.')[0];
+        ExtensionText.text = resInfo.Extension;
+        TimeText.text = "Import Time: "+resInfo.Time.ToString("G");
         var index = Tags.options.FindIndex((option) => {
-            return option.text == ResInfo.Tag;
+            return option.text == resInfo.Tag;
         });
-        Tags.SetValueWithoutNotify(index);    
-        if(ResInfo.Width != 0 && ResInfo.Height != 0)
-        {
-            SizeText.gameObject.SetActive(true);
-            SizeText.text = "Size: " + ResInfo.Width + "x" + ResInfo.Height;
-        }
-        else
-        {
-            SizeText.gameObject.SetActive(false);
-        }
+        Tags.SetValueWithoutNotify(index);
+        SizeText.gameObject.SetActive(resInfo.Width != 0 && resInfo.Height != 0);
+        SizeText.text = "Size: " + resInfo.Width + "x" + resInfo.Height;
+        var isCocosStudio = resInfo.Tag == ResourceTag.CocosStudio;
+        InputName.readOnly = isCocosStudio;
+        InputName.textComponent.color = isCocosStudio ? new Color(255, 0, 0) : new Color(0, 0, 0) ;
     }
 
 }
