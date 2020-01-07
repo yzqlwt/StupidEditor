@@ -16,9 +16,9 @@
         public static string None = "不进行合图(适用于背景图,SWF,音效)";
         public static Dictionary<string, string> TagsMap = new Dictionary<string, string>()
         {
-            { ResourceTag.TexturePackage, "Plist"},
-            { ResourceTag.None, "None"},
-            { ResourceTag.CocosStudio, "Csb"},
+            { ResourceTag.TexturePackage, "plist"},
+            { ResourceTag.None, "none"},
+            { ResourceTag.CocosStudio, "csb"},
         };
     }
 
@@ -176,6 +176,7 @@
                     process.StartInfo.Arguments = "rundll32.exe C://WINDOWS//system32//shimgvw.dll";
                     process.StartInfo.UseShellExecute = true;
                     process.Start();
+                    Debug.LogWarning(ResInfo.FileFullName);
                 }
 
 

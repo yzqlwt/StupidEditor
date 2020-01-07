@@ -100,9 +100,9 @@ public class Inspector : MonoBehaviour
         });
         Tags.ClearOptions();
         Tags.AddOptions(new List<string> {
+            ResourceTag.TexturePackage,
             ResourceTag.None,
-           ResourceTag.TexturePackage,
-           ResourceTag.CocosStudio,
+            ResourceTag.CocosStudio,
         });
     }
 

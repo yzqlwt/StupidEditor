@@ -1,4 +1,7 @@
 ﻿using B83.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using NRatel.TextureUnpacker;
 using SimplePopup;
 
 namespace StupidEditor
@@ -45,6 +48,11 @@ namespace StupidEditor
             TypeEventSystem.Register<FileDragIn>((fileDragIn)=> {
                 var path = fileDragIn.Path;
                 System.IO.FileInfo file = new System.IO.FileInfo(path);
+                if (file.Extension == ".zip")
+                {
+                    ImportZip(path);
+                    return;
+                }
                 var tempPath = DirTools.GetTempPath();
                 File.Copy(file.FullName, tempPath + "/" + file.Name, true);
                 var md5Code = GetMD5HashFromFile(path);
@@ -63,20 +71,27 @@ namespace StupidEditor
                     Time = DateTime.Now,
                     MD5 = md5Code,
                     Tag = fileDragIn.Tag,
-                    DropType = fileDragIn.Point.x < 680 ? DragDropType.Add : DragDropType.Replace,
+                    DropType = fileDragIn.Point.x < 860 ? DragDropType.Add : DragDropType.Replace,
                 });
+                Debug.Log(fileDragIn.Point);
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                var path = @"C:\Users\yzqlwt\Pictures";
-                Directory.GetFiles(path, "*").ForEach((file) =>
+                var path = @"C:\Users\yzqlwt\Desktop\tmp\进度\a2183e129fdf84af9e2bb7014936068a.zip";
+                // Directory.GetFiles(path, "*").ForEach((file) =>
+                // {
+                //     TypeEventSystem.Send(new FileDragIn()
+                //     {
+                //         Path = file,
+                //         Tag = ResourceTag.TexturePackage
+                //     });
+                // });
+                TypeEventSystem.Send(new FileDragIn()
                 {
-                    TypeEventSystem.Send(new FileDragIn()
-                    {
-                        Path = file,
-                        Tag = ResourceTag.TexturePackage
-                    });
+                    Path = path,
+                    Tag = ResourceTag.TexturePackage
                 });
+                Invoke("test", 5.0f);
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
                 var path = @"/Users/yzqlwt/Desktop/image";
@@ -84,26 +99,133 @@ namespace StupidEditor
                     TypeEventSystem.Send(new FileDragIn()
                     {
                         Path = file,
-                        Tag = ResourceTag.TexturePackage
+                        Tag = ResourceTag.TexturePackage,
+                        Point = new POINT(900,100)
+                    });
+                });
+            }
+            
+            
+        }
+
+        void test()
+        {
+            TypeEventSystem.Send(new FileDragIn()
+            {
+                Path = @"C:\Users\yzqlwt\Desktop\紫色汉堡.png",
+                Tag = ResourceTag.TexturePackage,
+                Point = new POINT(900,100)
+            });
+        }
+
+        void ImportZip(string path)
+        {
+            var tempPath = DirTools.GetTempPath();
+            var unzipPath = tempPath + "/unzip";
+            if(Directory.Exists(unzipPath))
+                DirTools.DeleteFilesAndFolders(unzipPath);
+            ZipUtil.UnZipFile(path, unzipPath);
+            if (File.Exists(unzipPath + "/ResConfig.json"))
+            {
+                StreamReader sr = new StreamReader(unzipPath + "/ResConfig.json");
+                if (sr == null)
+                {
+                    return;
+                }
+                string json = sr.ReadToEnd();
+                sr.Close();
+                var configTemplate = JsonConvert.DeserializeObject<ConfigTemplate>(json);
+                configTemplate.resource.Where((item) =>
+                {
+                    return item.Value.Tag != ResourceTag.TagsMap[ResourceTag.TexturePackage];
+                }).ForEach((item) =>
+                {
+                    var tag = ResourceTag.TagsMap.Where((tagItem) => { return tagItem.Value == item.Value.Tag; })
+                        .First().Key;
+                    string filepath = "";
+                    if (tag == ResourceTag.None)
+                    {
+                        filepath = unzipPath + "/none/" + item.Value.Name;
+                    }else if (tag == ResourceTag.CocosStudio)
+                    {
+                        filepath = unzipPath + "/" + item.Value.Name;
+                    }
+                    Debug.Log(string.Format("从zip导入文件路径{0} 文件Tag{1}", filepath, tag));
+                    TypeEventSystem.Send(new FileDragIn()
+                    {
+                        Path = filepath,
+                        Tag = tag
+                    });
+                });
+                if (configTemplate.plist != null)
+                {
+                    configTemplate.plist.ForEach((name) =>
+                    {
+                        var plistPath = unzipPath + "/plist/" + name + ".plist";
+                        var pngPath = unzipPath + "/plist/" + name + ".png";
+                        Unpacker(plistPath, pngPath);
+                    });
+                    configTemplate.resource.Where((item) =>
+                    {
+                        return item.Value.Tag == ResourceTag.TagsMap[ResourceTag.TexturePackage];
+                    }).ForEach((item) =>
+                    {
+                        var md5 = item.Value.Md5;
+                        string imagePath = DirTools.GetRestoredPNGDir() + "/" + md5 + item.Value.Extension;
+                        Debug.Log(imagePath);
+                        if (File.Exists(imagePath))
+                        {
+                            File.Move(imagePath, DirTools.GetRestoredPNGDir() + "/" + item.Value.Name);
+                            TypeEventSystem.Send(new FileDragIn()
+                            {
+                                Path = DirTools.GetRestoredPNGDir() + "/" + item.Value.Name,
+                                Tag = ResourceTag.TexturePackage
+                            });
+                        }
+                        else
+                        {
+                            Debug.Log("bububu");
+                        }
+                    });
+                }
+            }
+            else
+            {
+                Directory.GetFiles(unzipPath, "*").ForEach((file) =>
+                {
+                    TypeEventSystem.Send(new FileDragIn()
+                    {
+                        Path = file,
+                        Tag = ResourceTag.None
                     });
                 });
             }
 
-
-            Invoke("something", 10.0f);
-
-
         }
 
-
-        void something()
+        void Unpacker(string plistFilePath, string pngFilePath)
         {
-            TypeEventSystem.Send(new FileDragIn()
+            DirTools.DeleteFilesAndFolders(DirTools.GetRestoredPNGDir());
+            var loader = NRatel.TextureUnpacker.Loader.LookingForLoader(plistFilePath);
+            if (loader != null)
             {
-                Path = @"/Users/yzqlwt/Desktop/favicon.ico",
-                Tag = ResourceTag.TexturePackage,
-                Point = new POINT(900, 20)
-            });
+                var plist = loader.LoadPlist(plistFilePath);
+                var bigTexture = loader.LoadTexture(pngFilePath, plist.metadata);
+
+                int total = plist.frames.Count;
+                int count = 0;
+                foreach (var frame in plist.frames)
+                {
+                    try
+                    {
+                        Core.Restore(bigTexture, frame);
+                        count += 1;
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
         }
 
         /// <summary>

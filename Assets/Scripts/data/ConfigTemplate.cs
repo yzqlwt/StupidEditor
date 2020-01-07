@@ -9,6 +9,8 @@ namespace StupidEditor
         public string Name;
         public DateTime Time;
         public string Tag;
+        public string Md5;
+        public string Extension;
     }
 
     public class ConfigTemplate

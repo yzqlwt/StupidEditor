@@ -23,19 +23,6 @@ namespace QFramework.Example
     using System.Threading.Tasks;
     using System.Threading;
     using SimplePopup;
-
-    public enum SequenceCommand
-    {
-        GenerateJson,
-        TexturePackage,
-        Zip,
-    }
-
-    public class ExportCommand
-    {
-        public List<ResourceInfo> TotalResInfo;
-        public SequenceCommand command;
-    }
     public class ExportCommandDone
     {
         public bool Ret;
@@ -83,6 +70,30 @@ namespace QFramework.Example
         {
             TypeEventSystem.Register<FileInfo>((fileInfo) =>
             {
+                
+                List<Transform> children = new List<Transform>();
+                foreach (Transform child in ScrollViewContent)
+                {
+                    // var info = child.GetComponent<ResourceItem>().ResInfo;
+                    children.Add(child);
+                }
+
+                var target = children.Find((child) =>
+                {
+                    var info = child.GetComponent<ResourceItem>().ResInfo;
+                    return info.FileName == fileInfo.FileName;
+                });
+                if (target != null)
+                {
+                    SimplePopupManager.Instance.CreatePopup(string.Format("文件名相同，直接替换原有资源{0}", fileInfo.FileName));
+                    SimplePopupManager.Instance.AddButton("知道了", delegate
+                    {
+                        target.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
+                    });
+                    SimplePopupManager.Instance.ShowPopup();
+                    return;
+                }
+                Debug.Log(fileInfo.DropType);
                 if (fileInfo.DropType == DragDropType.Add)
                 {
                     var Item = Instantiate(ResourceItem, ScrollViewContent);
@@ -104,6 +115,7 @@ namespace QFramework.Example
                                 SimplePopupManager.Instance.CreatePopup(string.Format("不可以把 {0} 替换为 {1}", resItem.ResInfo.Extension, fileInfo.Extension));
                                 SimplePopupManager.Instance.AddButton("Soga", delegate { });
                                 SimplePopupManager.Instance.ShowPopup();
+                                File.Delete(fileInfo.FileFullName);
                                 return;
                             }
                             SimplePopupManager.Instance.CreatePopup(string.Format("确定替换 {0}{1}", inspector.InputName.text, inspector.ExtensionText.text));
@@ -121,7 +133,10 @@ namespace QFramework.Example
                                 }
                                 Debug.Log(resItem.ResInfo);
                             });
-                            SimplePopupManager.Instance.AddButton("算了算了", delegate { });
+                            SimplePopupManager.Instance.AddButton("算了算了", delegate
+                            {
+                                File.Delete(fileInfo.FileFullName);
+                            });
                             SimplePopupManager.Instance.ShowPopup();
                         }
 
@@ -141,38 +156,59 @@ namespace QFramework.Example
         public async void Export()
         {
             Debug.Log("导出");
+            DirTools.ClearOutputPath();
             List<ResourceInfo> TotalInfo = new List<ResourceInfo>();
             foreach (Transform child in ScrollViewContent)
             {
                 var info = child.GetComponent<ResourceItem>().ResInfo;
                 TotalInfo.Add(info);
             }
-            ExportCommandDone result = null;
-            result = await Task.Run(() => exec(TotalInfo, SequenceCommand.TexturePackage));
-            if(result.Ret == false)
+
+            var texturePackageComponent = transform.GetComponent<TexturePackageComponent>();
+            var result = texturePackageComponent.TexturePackage(TotalInfo);
+            if (result.Ret == false)
             {
                 ShowErrorTips(result.Reason);
                 return;
             }
-            result = await Task.Run(() => exec(TotalInfo, SequenceCommand.GenerateJson));
-            if (result.Ret == false)
+            else
             {
-                ShowErrorTips(result.Reason);
+                var resTexturePackage = (TexturePackageDone) result;
+                var generateJsonComponent = transform.GetComponent<GenerateJsonComponent>();
+                var result1 = generateJsonComponent.SerializeToJson(TotalInfo, resTexturePackage.PlistsName);
+                if (result1.Ret == false)
+                {
+                    ShowErrorTips(result1.Reason);
+                    return;
+                }
+                var resJson = (GenerateJsonDone) result1;
+                var NonePath = DirTools.GetOutputNonePath();
+                var PlistPath = DirTools.GetOutputPlistPath();
+                var CsbPath = DirTools.GetOutputCsbPath();
+                var OutPutPath = DirTools.GetOutputPath();
+                var filesNone = TotalInfo.Where((info) => { return info.Tag == ResourceTag.None; }).ForEach((info) =>
+                {
+                    File.Copy(info.FileFullName, NonePath+"/"+info.FileName);
+                });
+                var filesCsb = TotalInfo.Where((info) => { return info.Tag == ResourceTag.CocosStudio; }).ForEach((info) =>
+                {
+                    File.Copy(info.FileFullName, CsbPath+"/"+info.FileName);
+                });
+                resTexturePackage.Files.ForEach((path) =>
+                {
+                    var fileName = System.IO.Path.GetFileName(path);
+                    File.Copy(path, PlistPath+"/"+fileName);
+                });
+                resJson.Files.ForEach((path) =>
+                {
+                    var fileName = System.IO.Path.GetFileName(path);
+                    File.Copy(path, OutPutPath+"/"+fileName);
+                });
+                ZipUtil.ZipDirectory(DirTools.GetOutputPath(),DirTools.GetBasePath()+"/res.zip");
+                System.Diagnostics.Process.Start(DirTools.GetBasePath());
             }
+   
 
-        }
-        ExportCommandDone exec(List<ResourceInfo> totalInfo, SequenceCommand command)
-        {
-            ExportCommandDone res = null;
-            TypeEventSystem.Register<ExportCommandDone>((done) => {
-                res = done;
-            });
-            TypeEventSystem.Send(new ExportCommand()
-            {
-                TotalResInfo = totalInfo,
-                command = command
-            });
-            return res;
         }
         void ShowErrorTips(string reason)
         {
@@ -180,5 +216,13 @@ namespace QFramework.Example
             SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
             SimplePopupManager.Instance.ShowPopup();
         }
+
+        public void Thank()
+        {
+            SimplePopupManager.Instance.CreatePopup("还没想好往上放什么");
+            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
+            SimplePopupManager.Instance.ShowPopup();
+        }
+        
     }
 }
