@@ -41,7 +41,7 @@
                         TypeEventSystem.Send(new FileDragIn()
                         {
                             Path = file,
-                            Tag  = isCsb ? ResourceTag.CocosStudio : ResourceTag.TexturePackage,
+                            Tag  = isCsb ? ResourceTag.CocosStudio : ResourceTag.Default,
                             Point = aPos
                         });
                     });
@@ -50,7 +50,7 @@
                     TypeEventSystem.Send(new FileDragIn()
                     {
                         Path = path,
-                        Tag = existCsb ? ResourceTag.CocosStudio : ResourceTag.TexturePackage,
+                        Tag = existCsb ? ResourceTag.CocosStudio : ResourceTag.Default,
                         Point = aPos
                     });
                 }

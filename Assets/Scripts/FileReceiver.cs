@@ -77,21 +77,21 @@ namespace StupidEditor
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                var path = @"C:\Users\yzqlwt\Desktop\tmp\进度\a2183e129fdf84af9e2bb7014936068a.zip";
-                // Directory.GetFiles(path, "*").ForEach((file) =>
-                // {
-                //     TypeEventSystem.Send(new FileDragIn()
-                //     {
-                //         Path = file,
-                //         Tag = ResourceTag.TexturePackage
-                //     });
-                // });
-                TypeEventSystem.Send(new FileDragIn()
+                var path = @"C:\Users\yzqlwt\Desktop\新建文件夹 (2)";
+                Directory.GetFiles(path, "*").ForEach((file) =>
                 {
-                    Path = path,
-                    Tag = ResourceTag.TexturePackage
+                    TypeEventSystem.Send(new FileDragIn()
+                    {
+                        Path = file,
+                        Tag = ResourceTag.Default
+                    });
                 });
-                Invoke("test", 5.0f);
+                // TypeEventSystem.Send(new FileDragIn()
+                // {
+                //     Path = path,
+                //     Tag = ResourceTag.Default
+                // });
+                // Invoke("test", 5.0f);
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
                 var path = @"/Users/yzqlwt/Desktop/image";
@@ -99,7 +99,7 @@ namespace StupidEditor
                     TypeEventSystem.Send(new FileDragIn()
                     {
                         Path = file,
-                        Tag = ResourceTag.TexturePackage,
+                        Tag = ResourceTag.Default,
                         Point = new POINT(900,100)
                     });
                 });
@@ -113,7 +113,7 @@ namespace StupidEditor
             TypeEventSystem.Send(new FileDragIn()
             {
                 Path = @"C:\Users\yzqlwt\Desktop\紫色汉堡.png",
-                Tag = ResourceTag.TexturePackage,
+                Tag = ResourceTag.Default,
                 Point = new POINT(900,100)
             });
         }
@@ -196,7 +196,7 @@ namespace StupidEditor
                     TypeEventSystem.Send(new FileDragIn()
                     {
                         Path = file,
-                        Tag = ResourceTag.None
+                        Tag = ResourceTag.Default
                     });
                 });
             }

@@ -20,6 +20,7 @@
             { ResourceTag.None, "none"},
             { ResourceTag.CocosStudio, "csb"},
         };
+        public static string Default { get; set; } = None;
     }
 
     public class ResourceInfo
@@ -40,7 +41,7 @@
     }
 
         //
-        public string Tag = ResourceTag.TexturePackage;
+        public string Tag = ResourceTag.Default;
         public int Width = 0;
         public int Height = 0;
     }
@@ -51,6 +52,8 @@
         public Image FileImage;
         public Image TagImage;
         public ResourceInfo ResInfo { private set; get;}
+
+        private ToggleGroup _mToggleGroup;
         // Start is called before the first frame update
         void Start()
         {
@@ -84,7 +87,7 @@
             }
             else if (info.Extension == ".csb")
             {
-                path = @"file://" + Application.streamingAssetsPath + "/texture/csb.png";
+                path = @"file://" + Application.streamingAssetsPath + "/texture/cocos.png";
                 info.Tag = ResourceTag.CocosStudio;
             }
             else
@@ -114,6 +117,8 @@
                 Sprite temp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
                 FileImage.sprite = temp;
             }
+
+            _mToggleGroup = transform.GetComponent<Toggle>().group;
             StartCoroutine(AddTag(info));
 
         }
@@ -184,7 +189,6 @@
             }
             if(eventData.button == PointerEventData.InputButton.Left)
             {
-
                 StartCoroutine(ClickResourceItem());
             }
             
@@ -216,5 +220,6 @@
             }
             Destroy(gameObject);
         }
+
     }
 }

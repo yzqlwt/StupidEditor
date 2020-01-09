@@ -39,6 +39,7 @@ namespace QFramework.Example
         public GameObject ResourceItem;
         public Transform ScrollViewContent;
         public Transform Inspector;
+        public Toggle isTexturePackage;
         protected override void ProcessMsg(int eventId, QFramework.QMsg msg)
         {
             throw new System.NotImplementedException();
@@ -48,6 +49,12 @@ namespace QFramework.Example
         {
             mData = uiData as UIPanelData ?? new UIPanelData();
             // please add init code here
+            isTexturePackage.isOn = PlayerPrefs.GetInt("isTexturePackage") > 0;
+            isTexturePackage.onValueChanged.AddListener((ret) =>
+            {
+                ResourceTag.Default = isTexturePackage.isOn ? ResourceTag.TexturePackage : ResourceTag.None;
+                PlayerPrefs.SetInt("isTexturePackage", isTexturePackage.isOn ? 1:-1);
+            });
             TypeEventRegister();
         }
 
@@ -66,6 +73,8 @@ namespace QFramework.Example
         protected override void OnClose()
         {
         }
+        
+
         private void TypeEventRegister()
         {
             TypeEventSystem.Register<FileInfo>((fileInfo) =>

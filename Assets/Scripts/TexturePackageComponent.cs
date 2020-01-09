@@ -58,7 +58,7 @@ namespace StupidEditor
         public TexturePackageDone TexturePackage(List<ResourceInfo> totalInfo)
         {
             DirTools.DeleteFilesAndFolders(DirTools.GetTobePackedTexuresPath());
-            TotalResInfo = totalInfo.Where((info) => info.Tag == ResourceTag.TexturePackage).ToList();
+            var textureInfo = TotalResInfo = totalInfo.Where((info) => info.Tag == ResourceTag.TexturePackage).ToList();
             if (!isCanFit())
             {
                 return new TexturePackageDone()
@@ -67,10 +67,20 @@ namespace StupidEditor
                     Reason = "图片总面积超过了2048*2048，建议把背景图标记为不合图。\n下个版本会支持拆分为多个plist,感谢支持！"
                 };
             }
+            else if (textureInfo.Count == 0)
+            {
+                return new TexturePackageDone()
+                {
+                    Ret = true,
+                    Reason = "合图完成",
+                    PlistsName = new List<string>(),
+                    Files = new List<string>(),
+                };
+            }
             else
             {
                 var tobePackedPath = DirTools.GetTobePackedTexuresPath();
-                TotalResInfo.ForEach((info) =>
+                textureInfo.ForEach((info) =>
                 {
                     var filePath = tobePackedPath + "/" + info.MD5 + info.Extension;
                     File.Copy(info.FileFullName, filePath, true);
