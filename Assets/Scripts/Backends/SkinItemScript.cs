@@ -13,6 +13,7 @@ namespace StupidEditor
         public Text SkinName;
         public Text SkinId;
 
+        public SkinConfig _Config;
 
         void Start()
         {
@@ -21,8 +22,9 @@ namespace StupidEditor
 
         public void SetSkin(SkinConfig config)
         {
+            _Config = config;
             SkinName.text = "SkinName: "+config.name;
-            SkinId.text = "SkinId: "+config.skin_id;
+            SkinId.text = "SkinId: "+(config.skin_id != null ? config.skin_id : "未填写SkinID");
             StartCoroutine(GetImage("http://gate-static.97kid.com/" + config.preview.uri));
         } 
         IEnumerator GetImage(string uri)

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using QFramework;
 using UnityEngine.Networking;
@@ -9,7 +10,7 @@ namespace StupidEditor
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    class Template
+    public class Template
     {
         public int id;
         public string name;
@@ -50,16 +51,35 @@ namespace StupidEditor
         public Dropdown TemplateList;
         public Transform ScrollViewContent;
         public Transform SkinItem;
-        public Button BtnClose;
         private Dictionary<string, Template> templates;
+        private bool _active;
+        public bool Active
+        {
+            get { return _active; }
+            set
+            {
+                Debug.Log("BackendCliSetActiveSetActiveSetActiveSetActive");
+                Debug.Log(value);
+                _active = value;
+                transform.gameObject.SetActive(value);
+                if (value)
+                {
+                    StartCoroutine(GetTemplates());
+                }
+            }
+        }
+        
+
         void Start()
         {
             TemplateList.onValueChanged.AddListener((value) =>
             {
                 var text = TemplateList.captionText.text;
                 var template = templates[text];
-                StartCoroutine(GetSkins(template.id));
+                TypeEventSystem.Send(template);
+                transform.gameObject.SetActive(false);
             });
+            
         }
 
         public string GetAuthCode()
@@ -69,17 +89,21 @@ namespace StupidEditor
         }
         public void GetListClick()
         {
-            StartCoroutine(GetActivityList());
+            StartCoroutine(GetTemplates());
         }
-        IEnumerator GetActivityList()
+
+        public void BtnCloseClick()
+        {
+            transform.gameObject.SetActive(false);
+        }
+        IEnumerator GetTemplates()
         {
             TemplateList.GetComponent<Dropdown>().ClearOptions();
             var start = 0;
             var uri = AppConfig.JiuquUrl+"/admin-course/activityTemplates?count=100&start=" + start;
-            var Auth = JsonConvert.DeserializeObject<AccessTokenStruct>(PlayerPrefs.GetString("token")).access_token;
             using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
             {
-                webRequest.SetRequestHeader("Authorization", Auth);
+                webRequest.SetRequestHeader("Authorization", GetAuthCode());
                 webRequest.SetRequestHeader("Content-Type", "application/json");
                 // Request and wait for the desired page.
                 yield return webRequest.SendWebRequest();
@@ -92,43 +116,10 @@ namespace StupidEditor
                 {
                     var templateList = JsonConvert.DeserializeObject<TemplateList>(webRequest.downloadHandler.text);
                     var activities = templateList.targets.Select((temp) => { return temp.game_id+"<=>"+temp.name; }).ToList();
+                    activities.Insert(0, "未选择Template");
                     TemplateList.GetComponent<Dropdown>().AddOptions(activities);
                     templates = templateList.targets.ToDictionary((key) => { return key.game_id+"<=>"+key.name; }, value=>value);
                 }
-            }
-        }
-        
-        IEnumerator GetSkins(int template_id)
-        {
-            var url = string.Format(AppConfig.JiuquUrl+"/admin-course/skin?templateId={0}", template_id);
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
-            webRequest.SetRequestHeader("Authorization", GetAuthCode());
-            webRequest.SetRequestHeader("Content-Type", "application/json");
-            yield return webRequest.SendWebRequest();
-            if (webRequest.isNetworkError)
-            {
-                Debug.Log(": Error: " + webRequest.error);
-            }
-            else
-            {
-                Debug.Log(webRequest.downloadHandler.text);
-                var skinsConfig = JsonConvert.DeserializeObject<List<SkinConfig>>(webRequest.downloadHandler.text);
-                List<Transform> children = new List<Transform>();
-                foreach (Transform child in ScrollViewContent)
-                {
-                    children.Add(child);
-                }
-
-                children.ForEach((child) =>
-                {
-                    Destroy(child.gameObject);
-                });
-                skinsConfig.ForEach((skin) =>
-                {
-                    var item = Instantiate(SkinItem, ScrollViewContent);
-                    item.GetComponent<SkinItemScript>().SetSkin(skin);
-                    item.GetComponent<Toggle>().group = ScrollViewContent.GetComponent<ToggleGroup>();
-                });
             }
         }
         

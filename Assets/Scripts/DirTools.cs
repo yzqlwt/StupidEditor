@@ -142,5 +142,13 @@ namespace StupidEditor
                 Directory.CreateDirectory(path);
             return path;
         }
+        public static string GetDownloadDir()
+        {
+            var tempPath = GetTempPath();
+            var path = tempPath + "/download";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
+        }
     }
 }

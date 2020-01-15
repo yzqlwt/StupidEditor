@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 using System.IO;
+using UnityEngine.Networking;
 
 namespace QFramework.Example
 {
@@ -35,11 +36,15 @@ namespace QFramework.Example
 
     public partial class UIPanel : QFramework.UIPanel
     {
-
+        private float Version = 1.0f;
         public GameObject ResourceItem;
         public Transform ScrollViewContent;
         public Transform Inspector;
         public Toggle isTexturePackage;
+        public Text TemplateText;
+        public Button UploadButton;
+        public Button DownloadButton;
+        public Template _template;
         protected override void ProcessMsg(int eventId, QFramework.QMsg msg)
         {
             throw new System.NotImplementedException();
@@ -56,6 +61,22 @@ namespace QFramework.Example
                 PlayerPrefs.SetInt("isTexturePackage", isTexturePackage.isOn ? 1:-1);
             });
             TypeEventRegister();
+            UploadButton.onClick.AddListener(() =>
+            {
+                transform.GetComponent<Backends>().Upload(_template);
+                GenerateZip();
+            });
+            DownloadButton.onClick.AddListener(() =>
+            {
+                transform.GetComponent<Backends>().Download(_template);
+            });
+            var LoginPanel = transform.Find("LoginPanel");
+            if (LoginPanel)
+            {
+                LoginPanel.gameObject.SetActive(true);
+            }
+
+            StartCoroutine(VersionCheck());
         }
 
         protected override void OnOpen(QFramework.IUIData uiData)
@@ -72,11 +93,22 @@ namespace QFramework.Example
 
         protected override void OnClose()
         {
+            
         }
         
-
+        
         private void TypeEventRegister()
         {
+            DownloadButton.GetComponentInChildren<Text>().color = new Color(66,66,66);
+            UploadButton.GetComponentInChildren<Text>().color = new Color(66,66,66);
+            TypeEventSystem.Register<Template>((template) =>{
+                TemplateText.text = "已选择Template: "+template.name;
+                UploadButton.interactable = true;
+                DownloadButton.interactable = true;
+                DownloadButton.GetComponentInChildren<Text>().color = new Color(0,0,0);
+                UploadButton.GetComponentInChildren<Text>().color = new Color(0,0,0);
+                _template = template;
+            });
             TypeEventSystem.Register<FileInfo>((fileInfo) =>
             {
                 
@@ -102,7 +134,6 @@ namespace QFramework.Example
                     SimplePopupManager.Instance.ShowPopup();
                     return;
                 }
-                Debug.Log(fileInfo.DropType);
                 if (fileInfo.DropType == DragDropType.Add)
                 {
                     var Item = Instantiate(ResourceItem, ScrollViewContent);
@@ -148,7 +179,6 @@ namespace QFramework.Example
                             });
                             SimplePopupManager.Instance.ShowPopup();
                         }
-
                     }
                     else
                     {
@@ -157,13 +187,44 @@ namespace QFramework.Example
                         SimplePopupManager.Instance.ShowPopup();
                     }
                 }
-
-
             });
+           
         }
 
         public async void Export()
         {
+            var ret = GenerateZip();
+            if (ret)
+            {
+                System.Diagnostics.Process.Start(DirTools.GetBasePath());
+            }
+        }
+        void ShowErrorTips(string reason)
+        {
+            SimplePopupManager.Instance.CreatePopup(reason);
+            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
+            SimplePopupManager.Instance.ShowPopup();
+        }
+
+        public void Thank()
+        {
+            SimplePopupManager.Instance.CreatePopup("还没想好往上放什么");
+            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
+            SimplePopupManager.Instance.ShowPopup();
+        }
+
+        public void BackendClick()
+        {
+            
+            var templatePanel = transform.Find("TemplatePanel");
+            if (templatePanel)
+            {
+                templatePanel.GetComponent<TemplateListPanel>().Active = true;
+            }
+        }
+
+        private bool GenerateZip()
+        { 
             Debug.Log("导出");
             DirTools.ClearOutputPath();
             List<ResourceInfo> TotalInfo = new List<ResourceInfo>();
@@ -178,7 +239,7 @@ namespace QFramework.Example
             if (result.Ret == false)
             {
                 ShowErrorTips(result.Reason);
-                return;
+                return false;
             }
             else
             {
@@ -188,7 +249,7 @@ namespace QFramework.Example
                 if (result1.Ret == false)
                 {
                     ShowErrorTips(result1.Reason);
-                    return;
+                    return false;
                 }
                 var resJson = (GenerateJsonDone) result1;
                 var NonePath = DirTools.GetOutputNonePath();
@@ -214,23 +275,31 @@ namespace QFramework.Example
                     File.Copy(path, OutPutPath+"/"+fileName);
                 });
                 ZipUtil.ZipDirectory(DirTools.GetOutputPath(),DirTools.GetBasePath()+"/res.zip");
-                System.Diagnostics.Process.Start(DirTools.GetBasePath());
+                return true;
+
             }
-   
-
         }
-        void ShowErrorTips(string reason)
+        IEnumerator VersionCheck()
         {
-            SimplePopupManager.Instance.CreatePopup(reason);
-            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
-            SimplePopupManager.Instance.ShowPopup();
-        }
-
-        public void Thank()
-        {
-            SimplePopupManager.Instance.CreatePopup("还没想好往上放什么");
-            SimplePopupManager.Instance.AddButton("朕知道,退下吧", delegate { Debug.Log("clicked on yes"); });
-            SimplePopupManager.Instance.ShowPopup();
+            var url = string.Format("https://raw.githubusercontent.com/yzqlwt/StupidEditor/master/version");
+            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+            yield return webRequest.SendWebRequest();
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(": Error: " + webRequest.error);
+            }
+            else
+            {
+                var text = webRequest.downloadHandler.text;
+                var version = float.Parse(text);
+                if (Version < version)
+                {
+                    SimplePopupManager.Instance.CreatePopup("新版本已经好了！");
+                    SimplePopupManager.Instance.AddButton("我要换新的", delegate { Application.OpenURL("https://github.com/yzqlwt/StupidEditor/releases"); });
+                    SimplePopupManager.Instance.AddButton("不换", delegate { Debug.Log("clicked on yes"); });
+                    SimplePopupManager.Instance.ShowPopup();
+                }
+            }
         }
         
     }

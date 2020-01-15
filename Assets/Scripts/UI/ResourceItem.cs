@@ -106,11 +106,14 @@
                 {
                     var y = size.x / tex.width * tex.height;
                     FileImage.GetComponent<RectTransform>().sizeDelta = new Vector2(size.x, y);
+                    Debug.Log(y+"yyy");
                 }
                 else
                 {
                     var x = size.y / tex.height * tex.width;
+                    x = x > size.x ? size.x: x;
                     FileImage.GetComponent<RectTransform>().sizeDelta = new Vector2(x, size.y);
+                    Debug.Log(x+"xxx");
                 }
                 ResInfo.Width = tex.width;
                 ResInfo.Height = tex.height;

@@ -73,7 +73,6 @@ namespace StupidEditor
                     Tag = fileDragIn.Tag,
                     DropType = fileDragIn.Point.x < 860 ? DragDropType.Add : DragDropType.Replace,
                 });
-                Debug.Log(fileDragIn.Point);
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {

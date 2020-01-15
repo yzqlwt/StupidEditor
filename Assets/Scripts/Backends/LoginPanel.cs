@@ -31,9 +31,10 @@ namespace StupidEditor
         public InputField Google;
         
         // Start is called before the first frame update
+
+
         void Start()
         {
-            transform.gameObject.SetActive(true);
             if (PlayerPrefs.HasKey("token"))
             {
                 var token = JsonConvert.DeserializeObject<AccessTokenStruct>(PlayerPrefs.GetString("token"));
@@ -47,6 +48,11 @@ namespace StupidEditor
                     transform.gameObject.SetActive(false);
                 }
             }
+            else
+            {
+                transform.gameObject.SetActive(true);
+            }
+            
         }
 
         public void LoginClick()
