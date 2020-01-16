@@ -8,5 +8,6 @@ Assets/StreamingAssets/AssetBundles/
 Temp/
 .idea/
 AssetBundles/
+bin/
 *.sln
 *.csproj

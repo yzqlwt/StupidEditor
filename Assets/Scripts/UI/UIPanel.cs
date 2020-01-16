@@ -36,7 +36,7 @@ namespace QFramework.Example
 
     public partial class UIPanel : QFramework.UIPanel
     {
-        private float Version = 1.0f;
+        private float Version = 1.2f;
         public GameObject ResourceItem;
         public Transform ScrollViewContent;
         public Transform Inspector;
@@ -126,9 +126,11 @@ namespace QFramework.Example
                 });
                 if (target != null)
                 {
+                    var resItem = target.GetComponent<ResourceItem>();
                     SimplePopupManager.Instance.CreatePopup(string.Format("文件名相同，直接替换原有资源{0}", fileInfo.FileName));
                     SimplePopupManager.Instance.AddButton("知道了", delegate
                     {
+                        fileInfo.Tag = resItem.ResInfo.Tag;
                         target.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
                     });
                     SimplePopupManager.Instance.ShowPopup();
@@ -164,6 +166,7 @@ namespace QFramework.Example
                                 {
                                     var originName = resItem.ResInfo.FileName;
                                     File.Delete(resItem.ResInfo.FileFullName);
+                                    fileInfo.Tag = resItem.ResInfo.Tag;
                                     resItem.SetItemInfo(fileInfo);
                                     resItem.SetFileName(originName);
                                 }

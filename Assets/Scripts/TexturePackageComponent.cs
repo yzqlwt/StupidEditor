@@ -58,7 +58,11 @@ namespace StupidEditor
         public TexturePackageDone TexturePackage(List<ResourceInfo> totalInfo)
         {
             DirTools.DeleteFilesAndFolders(DirTools.GetTobePackedTexuresPath());
-            var textureInfo = TotalResInfo = totalInfo.Where((info) => info.Tag == ResourceTag.TexturePackage).ToList();
+            var textureInfo = TotalResInfo = totalInfo.Where((info) =>
+            {
+                return info.Tag == ResourceTag.TexturePackage ||
+                       (info.Tag == ResourceTag.CocosStudio && info.Extension == ".png");
+            }).ToList();
             if (!isCanFit())
             {
                 return new TexturePackageDone()
