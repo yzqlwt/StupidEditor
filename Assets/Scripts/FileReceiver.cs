@@ -124,7 +124,24 @@ namespace StupidEditor
             if(Directory.Exists(unzipPath))
                 DirTools.DeleteFilesAndFolders(unzipPath);
             ZipUtil.UnZipFile(path, unzipPath);
-            if (File.Exists(unzipPath + "/ResConfig.json"))
+            var isExist = File.Exists(unzipPath + "/ResConfig.json");
+            var ret = false;
+            if (isExist)
+            {
+                StreamReader sr = new StreamReader(unzipPath + "/ResConfig.json");
+                if (sr == null)
+                {
+                    return;
+                }
+                string json = sr.ReadToEnd();
+                sr.Close();
+                var configTemplate = JsonConvert.DeserializeObject<ConfigTemplate>(json);
+                if (configTemplate.resource!=null)
+                {
+                    ret = true;
+                }
+            }
+            if (ret)
             {
                 StreamReader sr = new StreamReader(unzipPath + "/ResConfig.json");
                 if (sr == null)
@@ -192,11 +209,33 @@ namespace StupidEditor
             {
                 Directory.GetFiles(unzipPath, "*").ForEach((file) =>
                 {
-                    TypeEventSystem.Send(new FileDragIn()
+                    var extension = System.IO.Path.GetExtension(file);
+                    if (extension != ".plist")
                     {
-                        Path = file,
-                        Tag = ResourceTag.Default
-                    });
+                        TypeEventSystem.Send(new FileDragIn()
+                        {
+                            Path = file,
+                            Tag = ResourceTag.Default
+                        });
+                    }
+                    else
+                    {
+                        var pathName = System.IO.Path.GetDirectoryName(file);
+                        var fileName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        var plistPath = file;
+                        var pngPath = pathName + '/'+fileName + ".png"; 
+                        Unpacker(plistPath, pngPath);
+                        var RestoredPath = DirTools.GetRestoredPNGDir();
+                        Directory.GetFiles(RestoredPath, "*").ForEach((filePath) =>
+                        {
+                            TypeEventSystem.Send(new FileDragIn()
+                            {
+                                Path = filePath,
+                                Tag = ResourceTag.Default
+                            });
+                        });
+                    }
+
                 });
             }
 
