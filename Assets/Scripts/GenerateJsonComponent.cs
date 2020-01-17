@@ -44,6 +44,18 @@ namespace StupidEditor
             }, Formatting.Indented);
             var path = DirTools.GetTempConfigPath() + "/ResConfig.json";
             File.WriteAllText(path, json);
+            if (dict.Count == 0)
+            {
+                return new GenerateJsonDone()
+                {
+                    Ret = false,
+                    Reason = "没资源生成个毛线啊",
+                    Files = new List<string>()
+                    {
+                        path
+                    }
+                };
+            }
             return new GenerateJsonDone()
             {
                 Ret = true,
