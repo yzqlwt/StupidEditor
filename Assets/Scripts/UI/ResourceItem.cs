@@ -204,11 +204,19 @@
 
         public void SetFileName(string name)
         {
-            ResInfo.FileName = name;
-            FileName.text = name;
+
             System.IO.FileInfo file = new System.IO.FileInfo(ResInfo.FileFullName);
-            ResInfo.FileFullName = file.DirectoryName + "/" + name;
-            file.MoveTo(file.DirectoryName + "/" + name);
+            if (File.Exists(file.DirectoryName + "/" + name))
+            {
+                SetFileName("副本-" + name);
+            }
+            else
+            {
+                ResInfo.FileName = name;
+                FileName.text = name;
+                ResInfo.FileFullName = file.DirectoryName + "/" + name;
+                file.MoveTo(file.DirectoryName + "/" + name);
+            }
         }
         public void SetTag(string ret)
         {

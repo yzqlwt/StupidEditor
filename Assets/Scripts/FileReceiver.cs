@@ -76,7 +76,7 @@ namespace StupidEditor
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                var path = @"C:\Users\yzqlwt\Desktop\新建文件夹 (2)";
+                var path = @"C:\Users\yzqlwt\Desktop\动画_slices";
                 Directory.GetFiles(path, "*").ForEach((file) =>
                 {
                     TypeEventSystem.Send(new FileDragIn()

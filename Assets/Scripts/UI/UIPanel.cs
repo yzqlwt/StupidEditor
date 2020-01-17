@@ -55,6 +55,7 @@ namespace QFramework.Example
             mData = uiData as UIPanelData ?? new UIPanelData();
             // please add init code here
             isTexturePackage.isOn = PlayerPrefs.GetInt("isTexturePackage") > 0;
+            ResourceTag.Default = isTexturePackage.isOn ? ResourceTag.TexturePackage : ResourceTag.None;
             isTexturePackage.onValueChanged.AddListener((ret) =>
             {
                 ResourceTag.Default = isTexturePackage.isOn ? ResourceTag.TexturePackage : ResourceTag.None;

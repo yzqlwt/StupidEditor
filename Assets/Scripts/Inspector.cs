@@ -54,14 +54,7 @@ public class Inspector : MonoBehaviour
             if (mItem)
             {
                 var resourceItem = mItem.GetComponent<ResourceItem>();
-                try
-                {
-                    resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
-                }
-                catch (IOException e)
-                {
-                    resourceItem.SetFileName(value + "的副本" +resourceItem.ResInfo.Extension);
-                }
+                resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
             }
             else
             {
@@ -109,7 +102,7 @@ public class Inspector : MonoBehaviour
     void SetUI()
     {
         var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
-        InputName.text = resInfo.FileName.Split('.')[0];
+        InputName.SetTextWithoutNotify(resInfo.FileName.Split('.')[0]);
         ExtensionText.text = resInfo.Extension;
         TimeText.text = "Import Time: "+resInfo.Time.ToString("G");
         var index = Tags.options.FindIndex((option) => {
