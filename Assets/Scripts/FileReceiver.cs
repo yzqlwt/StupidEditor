@@ -1,4 +1,7 @@
-﻿using B83.Win32;
+﻿using System.Diagnostics;
+using System.Xml;
+using System.Xml.Linq;
+using B83.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NRatel.TextureUnpacker;
@@ -53,6 +56,11 @@ namespace StupidEditor
                     ImportZip(path);
                     return;
                 }
+                else if (file.Extension == ".csb")
+                {
+                    ImportCsb(path);
+                    return;
+                }
                 var tempPath = DirTools.GetTempPath();
                 File.Copy(file.FullName, tempPath + "/" + file.Name, true);
                 var md5Code = GetMD5HashFromFile(path);
@@ -76,21 +84,21 @@ namespace StupidEditor
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                var path = @"C:\Users\yzqlwt\Desktop\动画_slices";
-                Directory.GetFiles(path, "*").ForEach((file) =>
-                {
-                    TypeEventSystem.Send(new FileDragIn()
-                    {
-                        Path = file,
-                        Tag = ResourceTag.Default
-                    });
-                });
+                // var path = @"C:\Users\yzqlwt\Desktop\动画_slices";
+                // Directory.GetFiles(path, "*").ForEach((file) =>
+                // {
+                //     TypeEventSystem.Send(new FileDragIn()
+                //     {
+                //         Path = file,
+                //         Tag = ResourceTag.Default
+                //     });
+                // });
                 // TypeEventSystem.Send(new FileDragIn()
                 // {
                 //     Path = path,
                 //     Tag = ResourceTag.Default
                 // });
-                // Invoke("test", 5.0f);
+                Invoke("test", 3.0f);
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
                 var path = @"/Users/yzqlwt/Desktop/image";
@@ -107,11 +115,51 @@ namespace StupidEditor
             
         }
 
+        void ImportCsb(string path)
+        {
+            System.IO.FileInfo file = new System.IO.FileInfo(path);
+            var command = Application.streamingAssetsPath + "/CsbInspect/main.exe";
+            var argu = path;
+            using (Process process = new Process())
+            {
+                process.StartInfo.FileName = command;
+
+                process.StartInfo.Arguments = argu;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.Start();
+
+                StreamReader reader = process.StandardOutput;
+                string output = reader.ReadToEnd();
+                process.WaitForExit();
+                reader.Close();
+                Debug.Log(output);
+                XMLAnalyzed(output);
+            }
+        }
+        private void XMLAnalyzed(string xmlStrig)
+        {
+
+            var ss = @"<note>
+                <to>Tove</to>
+                <from>Jani</from>
+                <heading>Reminder</heading>
+                <body>Don't forget me this weekend!</body>
+                </note>";
+            XmlDocument xml = new XmlDocument();    //xml文件对象
+            XmlReaderSettings set = new XmlReaderSettings();    //一个读取xml设置的对象
+            set.IgnoreComments = true;  //设置忽略xml注释文档的影响，有时候注释会影响到xml的读取
+            // xml.LoadXml(ss);   //加载xml文件
+            xml.LoadXml("<root> \n"+xmlStrig+" \n</root>");   //加载xml文件
+            var list = xml.SelectNodes("root");
+            // string jsontext = JsonConvert.SerializeObject()
+        }
+
         void test()
         {
             TypeEventSystem.Send(new FileDragIn()
             {
-                Path = @"C:\Users\yzqlwt\Desktop\紫色汉堡.png",
+                Path = @"C:\Users\yzqlwt\Dropbox\unity\csb2csd-master\G105Layer.csb",
                 Tag = ResourceTag.Default,
                 Point = new POINT(900,100)
             });
