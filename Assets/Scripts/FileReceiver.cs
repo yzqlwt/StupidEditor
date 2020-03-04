@@ -1,4 +1,8 @@
-﻿using B83.Win32;
+﻿using System.Diagnostics;
+using System.Xml;
+using System.Xml.Linq;
+using B83.Win32;
+using DebounceThrottle;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NRatel.TextureUnpacker;
@@ -53,6 +57,30 @@ namespace StupidEditor
                     ImportZip(path);
                     return;
                 }
+                else if (file.Extension == ".csb")
+                {
+                    // var csbInspector = transform.GetComponent<CsbInspector>();
+                    // var totalInfo = transform.GetComponent<QFramework.Example.UIPanel>().GetTotalInfo();
+                    // totalInfo = totalInfo.Where((info) => { return info.Extension == ".csb"; }).ToList();
+                    // var paths = totalInfo.Select((info) => { return info.FileFullName; }).ToList();
+                    // paths.Add(path);
+                    // var totalPaths = new List<string>();
+                    // paths.ForEach((name) =>
+                    // {
+                    //     totalPaths.AddRange(csbInspector.GetCsbImagePath(name));
+                    // });
+                    // totalPaths = totalPaths.Select((t) => { return Path.GetFileName(t); }).ToList();
+                    // totalPaths = totalPaths.Distinct().ToList();
+                    // transform.GetComponent<AppData>().CsbImagePaths = totalPaths;
+                }
+                else if(file.Extension == ".png")
+                {
+                    // var ret = isCocosStudioImage(path);
+                    // if (ret)
+                    // {
+                    //     fileDragIn.Tag = ResourceTag.CocosStudio;
+                    // }
+                }
                 var tempPath = DirTools.GetTempPath();
                 File.Copy(file.FullName, tempPath + "/" + file.Name, true);
                 var md5Code = GetMD5HashFromFile(path);
@@ -76,7 +104,7 @@ namespace StupidEditor
             });
             if(Application.platform == RuntimePlatform.WindowsEditor )
             {
-                var path = @"C:\Users\yzqlwt\Desktop\新建文件夹 (2)";
+                var path = @"C:\Users\yzqlw\Desktop\png";
                 Directory.GetFiles(path, "*").ForEach((file) =>
                 {
                     TypeEventSystem.Send(new FileDragIn()
@@ -90,7 +118,7 @@ namespace StupidEditor
                 //     Path = path,
                 //     Tag = ResourceTag.Default
                 // });
-                // Invoke("test", 5.0f);
+                Invoke("test", 3.0f);
             }else if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
             {
                 var path = @"/Users/yzqlwt/Desktop/image";
@@ -103,18 +131,31 @@ namespace StupidEditor
                     });
                 });
             }
-            
-            
+        }
+
+        bool isCocosStudioImage(string path)
+        {
+            var filename = Path.GetFileName(path);
+            var paths = transform.GetComponent<AppData>().CsbImagePaths;
+            return paths.Contains(filename);
         }
 
         void test()
         {
-            TypeEventSystem.Send(new FileDragIn()
-            {
-                Path = @"C:\Users\yzqlwt\Desktop\紫色汉堡.png",
-                Tag = ResourceTag.Default,
-                Point = new POINT(900,100)
-            });
+            // var path = @"C:\Users\yzqlw\Desktop\G105Layer.csb";
+            // var path2 = @"C:\Users\yzqlwt\Dropbox\unity\csb2csd-master\G105Layer.csb";
+            // TypeEventSystem.Send(new FileDragIn()
+            // {
+            //     Path = path,
+            //     Tag = ResourceTag.Default,
+            //     Point = new POINT(200,100)
+            // });
+            // TypeEventSystem.Send(new FileDragIn()
+            // {
+            //     Path = @"C:\Users\yzqlw\Desktop\base_side.png",
+            //     Tag = ResourceTag.Default,
+            //     Point = new POINT(200,100)
+            // });
         }
 
         void ImportZip(string path)
@@ -124,7 +165,24 @@ namespace StupidEditor
             if(Directory.Exists(unzipPath))
                 DirTools.DeleteFilesAndFolders(unzipPath);
             ZipUtil.UnZipFile(path, unzipPath);
-            if (File.Exists(unzipPath + "/ResConfig.json"))
+            var isExist = File.Exists(unzipPath + "/ResConfig.json");
+            var ret = false;
+            if (isExist)
+            {
+                StreamReader sr = new StreamReader(unzipPath + "/ResConfig.json");
+                if (sr == null)
+                {
+                    return;
+                }
+                string json = sr.ReadToEnd();
+                sr.Close();
+                var configTemplate = JsonConvert.DeserializeObject<ConfigTemplate>(json);
+                if (configTemplate.resource!=null)
+                {
+                    ret = true;
+                }
+            }
+            if (ret)
             {
                 StreamReader sr = new StreamReader(unzipPath + "/ResConfig.json");
                 if (sr == null)
@@ -192,11 +250,33 @@ namespace StupidEditor
             {
                 Directory.GetFiles(unzipPath, "*").ForEach((file) =>
                 {
-                    TypeEventSystem.Send(new FileDragIn()
+                    var extension = System.IO.Path.GetExtension(file);
+                    if (extension != ".plist")
                     {
-                        Path = file,
-                        Tag = ResourceTag.Default
-                    });
+                        TypeEventSystem.Send(new FileDragIn()
+                        {
+                            Path = file,
+                            Tag = ResourceTag.Default
+                        });
+                    }
+                    else
+                    {
+                        var pathName = System.IO.Path.GetDirectoryName(file);
+                        var fileName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        var plistPath = file;
+                        var pngPath = pathName + '/'+fileName + ".png"; 
+                        Unpacker(plistPath, pngPath);
+                        var RestoredPath = DirTools.GetRestoredPNGDir();
+                        Directory.GetFiles(RestoredPath, "*").ForEach((filePath) =>
+                        {
+                            TypeEventSystem.Send(new FileDragIn()
+                            {
+                                Path = filePath,
+                                Tag = ResourceTag.Default
+                            });
+                        });
+                    }
+
                 });
             }
 

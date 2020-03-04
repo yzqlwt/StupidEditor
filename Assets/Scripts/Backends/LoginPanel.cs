@@ -76,7 +76,7 @@ namespace StupidEditor
             yield return webRequest.SendWebRequest();
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                SimplePopup.SimplePopupManager.Instance.CreatePopup("登录失败");
+                SimplePopup.SimplePopupManager.Instance.CreatePopup("登录失败-网络错误");
                 SimplePopup.SimplePopupManager.Instance.AddButton("知道了", delegate {  });
                 SimplePopup.SimplePopupManager.Instance.ShowPopup();
             }
@@ -92,7 +92,7 @@ namespace StupidEditor
                 }
                 else
                 {
-                    SimplePopup.SimplePopupManager.Instance.CreatePopup("登录失败");
+                    SimplePopup.SimplePopupManager.Instance.CreatePopup("登录失败-异常数据");
                     SimplePopup.SimplePopupManager.Instance.AddButton("知道了", delegate {  });
                     SimplePopup.SimplePopupManager.Instance.ShowPopup();
                 }

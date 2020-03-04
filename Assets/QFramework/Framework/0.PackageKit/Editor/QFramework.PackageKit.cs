@@ -1,6 +1,7 @@
 using QFramework.PackageKit;
 #if UNITY_EDITOR
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -44,18 +45,18 @@ namespace QFramework
 #endif
 
 #if UNITY_IPHONE
-            NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces(); ;  
-            foreach (NetworkInterface adapter in adapters)  
+            System.Net.NetworkInformation.NetworkInterface[] adapters =  System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces(); ;  
+            foreach (System.Net.NetworkInformation.NetworkInterface adapter in adapters)  
             {  
-                if (adapter.Supports(NetworkInterfaceComponent.IPv4))  
+                if (adapter.Supports( System.Net.NetworkInformation.NetworkInterfaceComponent.IPv4))  
                 {  
-                    UnicastIPAddressInformationCollection uniCast = adapter.GetIPProperties().UnicastAddresses;  
+                    System.Net.NetworkInformation.UnicastIPAddressInformationCollection uniCast = adapter.GetIPProperties().UnicastAddresses;  
                     if (uniCast.Count > 0)  
                     {  
-                        foreach (UnicastIPAddressInformation uni in uniCast)  
+                        foreach ( System.Net.NetworkInformation.UnicastIPAddressInformation uni in uniCast)  
                         {  
                             //得到IPv4的地址。 AddressFamily.InterNetwork指的是IPv4  
-                            if (uni.Address.AddressFamily == AddressFamily.InterNetwork)
+                            if (uni.Address.AddressFamily ==  System.Net.Sockets.AddressFamily.InterNetwork)
                             {
                                 AddressIP = uni.Address.ToString();
                             }
@@ -146,7 +147,7 @@ namespace QFramework
         {
             if (Network.IsReachable)
             {
-                new PackageManagerServer().GetAllRemotePackageInfo((packageDatas) =>
+                new PackageManagerServer().GetAllRemotePackageInfoV5((packageDatas,res) =>
                 {
                     if (packageDatas == null)
                     {
@@ -155,7 +156,7 @@ namespace QFramework
 
                     if (new PackageManagerModel().VersionCheck)
                     {
-                        CheckNewVersionDialog(packageDatas, PackageInfosRequestCache.Get().PackageDatas);
+                        CheckNewVersionDialog(packageDatas, PackageInfosRequestCache.Get().PackageRepositories);
                     }
                 });
             }
@@ -164,16 +165,16 @@ namespace QFramework
             GoToWait();
         }
 
-        private static bool CheckNewVersionDialog(List<PackageData> requestPackageDatas,
-            List<PackageData> cachedPackageDatas)
+        private static bool CheckNewVersionDialog(List<PackageRepository> requestPackageDatas,
+            List<PackageRepository> cachedPackageDatas)
         {
             foreach (var requestPackageData in requestPackageDatas)
             {
                 var cachedPacakgeData =
-                    cachedPackageDatas.Find(packageData => packageData.Name == requestPackageData.Name);
+                    cachedPackageDatas.Find(packageData => packageData.name == requestPackageData.name);
 
                 var installedPackageVersion = InstalledPackageVersions.Get()
-                    .Find(packageVersion => packageVersion.Name == requestPackageData.Name);
+                    .Find(packageVersion => packageVersion.Name == requestPackageData.name);
 
                 if (installedPackageVersion == null)
                 {
@@ -184,7 +185,7 @@ namespace QFramework
                          requestPackageData.VersionNumber > cachedPacakgeData.VersionNumber &&
                          requestPackageData.VersionNumber > installedPackageVersion.VersionNumber)
                 {
-                    ShowDisplayDialog(requestPackageData.Name);
+                    ShowDisplayDialog(requestPackageData.name);
                     return false;
                 }
             }
@@ -313,15 +314,15 @@ namespace QFramework
 
     public static class InstallPackage
     {
-        public static void Do(PackageData mRequestPackageData)
+        public static void Do(PackageRepository requestPackageData)
         {
-            var tempFile = "Assets/" + mRequestPackageData.Name + ".unitypackage";
+            var tempFile = "Assets/" + requestPackageData.name + ".unitypackage";
 
-            Debug.Log(mRequestPackageData.DownloadUrl + ">>>>>>:");
+            Debug.Log(requestPackageData.latestDownloadUrl + ">>>>>>:");
 
             EditorUtility.DisplayProgressBar("插件更新", "插件下载中 ...", 0.1f);
 
-            EditorHttp.Download(mRequestPackageData.DownloadUrl, response =>
+            EditorHttp.Download(requestPackageData.latestDownloadUrl, response =>
             {
                 if (response.Type == ResponseType.SUCCEED)
                 {
@@ -332,9 +333,7 @@ namespace QFramework
                     AssetDatabase.ImportPackage(tempFile, false);
 
                     File.Delete(tempFile);
-
-                    mRequestPackageData.SaveVersionFile();
-
+                    
                     AssetDatabase.Refresh();
 
                     Debug.Log("PackageManager:插件下载成功");
@@ -345,7 +344,7 @@ namespace QFramework
                 {
                     EditorUtility.ClearProgressBar();
 
-                    EditorUtility.DisplayDialog(mRequestPackageData.Name,
+                    EditorUtility.DisplayDialog(requestPackageData.name,
                         "插件安装失败,请联系 liangxiegame@163.com 或者加入 QQ 群:623597263" + response.Error + ";", "OK");
                 }
             }, OnProgressChanged);
@@ -396,99 +395,7 @@ namespace QFramework
 
  
 
-    public class HeaderView : HorizontalLayout
-    {
-        public HeaderView()
-        {
-            HorizontalStyle = "box";
-
-            new LabelView(LocaleText.PackageName)
-                .Width(150)
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.ServerVersion)
-                .Width(80)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.LocalVersion)
-                .Width(80)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.AccessRight)
-                .Width(80)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.Doc)
-                .Width(40)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.Action)
-                .Width(100)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-
-            new LabelView(LocaleText.ReleaseNote)
-                .Width(100)
-                .TextMiddleCenter()
-                .FontSize(12)
-                .FontBold()
-                .AddTo(this);
-        }
-
-        class LocaleText
-        {
-            public static string PackageName
-            {
-                get { return Language.IsChinese ? " 模块名" : " Package Name"; }
-            }
-
-            public static string ServerVersion
-            {
-                get { return Language.IsChinese ? "服务器版本" : "Server Version"; }
-            }
-
-            public static string LocalVersion
-            {
-                get { return Language.IsChinese ? "本地版本" : "Local Version"; }
-            }
-
-            public static string AccessRight
-            {
-                get { return Language.IsChinese ? "访问权限" : "Access Right"; }
-            }
-
-            public static string Doc
-            {
-                get { return Language.IsChinese ? "文档" : "Doc"; }
-            }
-
-            public static string Action
-            {
-                get { return Language.IsChinese ? "动作" : "Action"; }
-            }
-
-            public static string ReleaseNote
-            {
-                get { return Language.IsChinese ? "版本说明" : "ReleaseNote Note"; }
-            }
-        }
-    }
+   
 
     public interface IEditorStrangeMVCCommand
     {
@@ -500,7 +407,7 @@ namespace QFramework
     [Serializable]
     public class PackageInfosRequestCache
     {
-        public List<PackageData> PackageDatas = new List<PackageData>();
+        public List<PackageRepository> PackageRepositories = new List<PackageRepository>();
 
         private static string mFilePath
         {
@@ -531,14 +438,6 @@ namespace QFramework
         {
             File.WriteAllText(mFilePath, JsonUtility.ToJson(this));
         }
-    }
-
-  
-
-    public class PackageManagerViewUpdate
-    {
-        public IEnumerable<PackageData> PackageDatas { get; set; }
-        public bool VersionCheck { get; set; }
     }
 
 
@@ -597,7 +496,7 @@ namespace QFramework
         {
             var packageKitWindow = Create<PackageKitWindow>(true);
             packageKitWindow.titleContent = new GUIContent(LocaleText.QFrameworkSettings);
-            packageKitWindow.position = new Rect( 100, 100, 690, 800);
+            packageKitWindow.position = new Rect( 50, 100, 800, 800);
             packageKitWindow.Show();
             IsOpenening = true;
         }
@@ -1188,8 +1087,13 @@ namespace QFramework
 
         private VerticalLayout mSpreadView = new VerticalLayout();
 
-        public TreeNode(bool spread, string content, int indent = 0)
+        public TreeNode(bool spread, string content, int indent = 0,bool autosaveSpreadState = false)
         {
+            if (autosaveSpreadState)
+            {
+                spread = EditorPrefs.GetBool(content, spread);
+            }
+
             Content = content;
             Spread = new Property<bool>(spread);
 
@@ -1197,6 +1101,12 @@ namespace QFramework
 
             mFirstLine.AddTo(this);
             mFirstLine.AddChild(new SpaceView(indent));
+
+            if (autosaveSpreadState)
+            {
+                Spread.Bind(value => EditorPrefs.SetBool(content, value));
+            }
+
 
             new CustomView(() =>
             {

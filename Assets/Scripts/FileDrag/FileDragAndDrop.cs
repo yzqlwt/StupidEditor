@@ -31,17 +31,18 @@
         void OnFilesAsync(List<string> aFiles, POINT aPos)
         {
             var existCsb = aFiles.ToList<string>().Find((file) => file.EndsWith(".csb")) != null;
+            existCsb = false;
             foreach(var path in aFiles)
             {
                 if (Directory.Exists(path))
                 {
                     var files = Directory.GetFiles(path, "*");
-                    var isCsb = files.ToList<string>().Find((file) => file.EndsWith(".csb")) != null;
+                    // var isCsb = files.ToList<string>().Find((file) => file.EndsWith(".csb")) != null;
                     Directory.GetFiles(path, "*").ForEach((file) => {
                         TypeEventSystem.Send(new FileDragIn()
                         {
                             Path = file,
-                            Tag  = isCsb ? ResourceTag.CocosStudio : ResourceTag.Default,
+                            Tag  = ResourceTag.Default,
                             Point = aPos
                         });
                     });
@@ -50,7 +51,7 @@
                     TypeEventSystem.Send(new FileDragIn()
                     {
                         Path = path,
-                        Tag = existCsb ? ResourceTag.CocosStudio : ResourceTag.Default,
+                        Tag = ResourceTag.Default,
                         Point = aPos
                     });
                 }

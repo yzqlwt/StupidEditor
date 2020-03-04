@@ -122,11 +122,12 @@ namespace StupidEditor
                 var attachment = list.Find((item) => item.name == ResName);
                 if (_operation == "upload")
                 {
-                    yield return StartCoroutine(UploadZip());
+                    yield return StartCoroutine(DownloadZip(attachment));
+                    yield return StartCoroutine(UploadZip(itemId));
                     var attachmentId = _attachmentId;
                     if (attachment != null)
                     {
-
+                    
                         yield return StartCoroutine(UpdateArgu(attachment.id.ToString(), itemType, itemId.ToString(),
                             attachment.name, attachmentId));
                     }
@@ -209,9 +210,10 @@ namespace StupidEditor
             }
         }
 
-        IEnumerator UploadZipToCloud()
+        IEnumerator UploadZipToCloud(int itemId)
         {
-            var filePath = DirTools.GetBasePath()+"/res.zip";
+            var template_id = _template.id;
+            var filePath = _zipname;
             if (!File.Exists(filePath))
             {
                 Debug.LogError("未发现资源！！！");
@@ -224,8 +226,11 @@ namespace StupidEditor
                 fs.Read(bytes, 0, (int)fs.Length);
                 fs.Close();
                 WWWForm form = new WWWForm();
-                form.AddBinaryData("file", bytes, "res.zip");
-                var webRequest = UnityWebRequest.Post("http://file.yzqlwt.com/uploadSingle", form);
+                form.AddBinaryData("ResConfig", bytes, "res.zip");
+                var webRequest = UnityWebRequest.Post("http://stupideditor.yzqlwt.com/packages/uploadSingle", form);
+                // var webRequest = UnityWebRequest.Post("http://localhost:3000/packages/uploadSingle", form);
+                webRequest.SetRequestHeader("template-id", template_id+"");
+                webRequest.SetRequestHeader("item-id", itemId+"");
                 webRequest.SendWebRequest();
                 var httpProgress = Instantiate(HttpProgress, transform);
                 yield return StartCoroutine(httpProgress.GetComponent<WebRequest>().Process(webRequest, "正在备份到云..."));
@@ -239,9 +244,9 @@ namespace StupidEditor
                 }
             }
         }
-        IEnumerator UploadZip()
+        IEnumerator UploadZip(int itemId)
         {
-            yield return StartCoroutine(UploadZipToCloud());
+            yield return StartCoroutine(UploadZipToCloud(itemId));
             var filePath = DirTools.GetBasePath()+"/res.zip";
             if (!File.Exists(filePath))
             {
@@ -278,25 +283,33 @@ namespace StupidEditor
 
         IEnumerator DownloadZip(Attachment attachment)
         {
-            var url = string.Format("http://gate-static.97kid.com/{0}", attachment.attachments.uri);
-            DateTime date = DateTime.Now;
-            var dateStr = date.ToString("yyyyMMdd-HH时mm分ss秒");
-            var zipPath = DirTools.GetDownloadDir()+"/"+dateStr+ "."+ attachment.attachments.ext_name;
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
-            var httpProgress = Instantiate(HttpProgress, transform);
-            webRequest.SendWebRequest();
-            yield return StartCoroutine(httpProgress.GetComponent<WebRequest>().Process(webRequest, "正在从后台下载..."));
-            if (webRequest.isNetworkError)
+            if (attachment == null)
             {
-                Debug.Log(": Error: " + webRequest.error);
+                yield return null;
             }
             else
             {
-                Debug.Log(zipPath);
-                var data = webRequest.downloadHandler.data;
-                File.WriteAllBytes(zipPath, data);
-                _zipname = zipPath;
+                var url = string.Format("http://gate-static.97kid.com/{0}", attachment.attachments.uri);
+                DateTime date = DateTime.Now;
+                var dateStr = date.ToString("yyyyMMdd-HH时mm分ss秒");
+                var zipPath = DirTools.GetDownloadDir()+"/"+dateStr+ "."+ attachment.attachments.ext_name;
+                UnityWebRequest webRequest = UnityWebRequest.Get(url);
+                var httpProgress = Instantiate(HttpProgress, transform);
+                webRequest.SendWebRequest();
+                yield return StartCoroutine(httpProgress.GetComponent<WebRequest>().Process(webRequest, "正在从后台下载..."));
+                if (webRequest.isNetworkError)
+                {
+                    Debug.Log(": Error: " + webRequest.error);
+                }
+                else
+                {
+                    Debug.Log(zipPath);
+                    var data = webRequest.downloadHandler.data;
+                    File.WriteAllBytes(zipPath, data);
+                    _zipname = zipPath;
+                }
             }
+
 
         }
 

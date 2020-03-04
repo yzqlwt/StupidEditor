@@ -22,7 +22,7 @@ public class Inspector : MonoBehaviour
     public Text TimeText;
     public Text SizeText;
     public Button DeleteBtn;
-    public Dropdown Tags;
+    public Toggle ImageMark;
 
     private Toggle mItem;
     public Transform SelectItem { 
@@ -54,30 +54,7 @@ public class Inspector : MonoBehaviour
             if (mItem)
             {
                 var resourceItem = mItem.GetComponent<ResourceItem>();
-                try
-                {
-                    resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
-                }
-                catch (IOException e)
-                {
-                    resourceItem.SetFileName(value + "的副本" +resourceItem.ResInfo.Extension);
-                }
-            }
-            else
-            {
-                Debug.LogError("mItem is null");
-            }
-        });
-        Tags.onValueChanged.AddListener((ret) =>
-        {
-            if (mItem)
-            {
-                var resourceItem = mItem.GetComponent<ResourceItem>();
-                resourceItem.SetTag(Tags.captionText.text);
-                var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
-                var isCocosStudio = resInfo.Tag == ResourceTag.CocosStudio;
-                InputName.readOnly = isCocosStudio;
-                InputName.textComponent.color = isCocosStudio ? new Color(255, 0, 0) : new Color(0, 0, 0) ;
+                resourceItem.SetFileName(value + resourceItem.ResInfo.Extension);
             }
             else
             {
@@ -98,29 +75,47 @@ public class Inspector : MonoBehaviour
                 Debug.LogError("mItem is null");
             }
         });
-        Tags.ClearOptions();
-        Tags.AddOptions(new List<string> {
-            ResourceTag.TexturePackage,
-            ResourceTag.None,
-            ResourceTag.CocosStudio,
+        ImageMark.onValueChanged.AddListener((state) =>
+        {
+            if (mItem)
+            {
+                var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
+                var isCocosStudio = resInfo.Tag == ResourceTag.CocosStudio;
+                var resourceItem = mItem.GetComponent<ResourceItem>();
+                
+                InputName.textComponent.color = isCocosStudio ? new Color(255, 0, 0) : new Color(0, 0, 0) ;
+                if (state)
+                {
+                    resInfo.Tag = ResourceTag.TexturePackage;
+                    resourceItem.SetTag(ResourceTag.TexturePackage);
+                }
+                else
+                {
+                    resInfo.Tag = ResourceTag.None;
+                    resourceItem.SetTag(ResourceTag.None);
+                }
+            }
+            else
+            {
+                Debug.LogError("mItem is null");
+            }
         });
+
     }
 
     void SetUI()
     {
         var resInfo = mItem.GetComponent<ResourceItem>().ResInfo;
-        InputName.text = resInfo.FileName.Split('.')[0];
+        InputName.SetTextWithoutNotify(resInfo.FileName.Split('.')[0]);
         ExtensionText.text = resInfo.Extension;
         TimeText.text = "Import Time: "+resInfo.Time.ToString("G");
-        var index = Tags.options.FindIndex((option) => {
-            return option.text == resInfo.Tag;
-        });
-        Tags.SetValueWithoutNotify(index);
         SizeText.gameObject.SetActive(resInfo.Width != 0 && resInfo.Height != 0);
         SizeText.text = "Size: " + resInfo.Width + "x" + resInfo.Height;
         var isCocosStudio = resInfo.Tag == ResourceTag.CocosStudio;
         InputName.readOnly = isCocosStudio;
         InputName.textComponent.color = isCocosStudio ? new Color(255, 0, 0) : new Color(0, 0, 0) ;
+        ImageMark.gameObject.SetActive(!isCocosStudio);
+        ImageMark.SetIsOnWithoutNotify(resInfo.Tag==ResourceTag.TexturePackage);
     }
 
 }

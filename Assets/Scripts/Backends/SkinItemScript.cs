@@ -47,6 +47,7 @@ namespace StupidEditor
                 else
                 {
                     var x = size.y / tex.height * tex.width;
+                    x = x > size.x ? size.x: x;
                     PreviewImage.GetComponent<RectTransform>().sizeDelta = new Vector2(x, size.y);
                 }
                 Sprite temp = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));

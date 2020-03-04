@@ -154,7 +154,7 @@ namespace QFramework
 		{
 			get
 			{
-				if (mInstance == null)
+				if (mInstance == null && !mOnApplicationQuit)
 				{
 					mInstance = MonoSingletonCreator.CreateMonoSingleton<T>();
 				}
@@ -187,6 +187,15 @@ namespace QFramework
 			}
 		}
 
+		protected static bool mOnApplicationQuit = false;
+
+		protected virtual void OnApplicationQuit()
+		{
+			mOnApplicationQuit = true;
+			if (mInstance == null) return;
+			Destroy(mInstance.gameObject);
+			mInstance = null;
+		}
 		protected virtual void OnDestroy()
 		{
 			mInstance = null;

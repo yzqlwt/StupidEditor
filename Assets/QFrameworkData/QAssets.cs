@@ -11,6 +11,11 @@
 namespace QAssetBundle
 {
     
+    public class Backendpanel_prefab
+    {
+        public const string BundleName = "backendpanel_prefab";
+        public const string BACKENDPANEL = "backendpanel";
+    }
     public class Uipanel_prefab
     {
         public const string BundleName = "uipanel_prefab";

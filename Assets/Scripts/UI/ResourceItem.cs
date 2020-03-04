@@ -23,6 +23,11 @@
         public static string Default { get; set; } = None;
     }
 
+    public class DeleteItem
+    {
+        public string Extension;
+    }
+
     public class ResourceInfo
     {
         public string FileName;
@@ -48,6 +53,10 @@
 
     public class ResourceItem : MonoBehaviour, IPointerClickHandler
     {
+        public static int ResTag0 = 0;
+        public static int ResTag1000 = 1000;
+        public static int ResTag2000 = 2000;
+        public static int ResTag3000 = 3000;
         public Text FileName;
         public Image FileImage;
         public Image TagImage;
@@ -69,6 +78,27 @@
             FileName.text = ResInfo.FileName;
 
             StartCoroutine(GetImage(ResInfo));
+            if (ResInfo.Tag == ResourceTag.CocosStudio)
+            {
+                transform.SetSiblingIndex(ResourceItem.ResTag1000);
+                ResourceItem.ResTag1000++;
+            }
+            if (ResInfo.Tag == ResourceTag.None)
+            {
+                transform.SetSiblingIndex(ResourceItem.ResTag2000);
+                ResourceItem.ResTag2000++;
+            }
+            if (ResInfo.Tag == ResourceTag.TexturePackage)
+            {
+                transform.SetSiblingIndex(ResourceItem.ResTag3000);
+                ResourceItem.ResTag3000++;
+            }
+            if (ResInfo.Extension == ".csb")
+            {
+                transform.SetSiblingIndex(ResourceItem.ResTag0);
+                ResourceItem.ResTag0++;
+            }
+            
         }
 
         IEnumerator GetImage(ResourceInfo info)
@@ -106,14 +136,12 @@
                 {
                     var y = size.x / tex.width * tex.height;
                     FileImage.GetComponent<RectTransform>().sizeDelta = new Vector2(size.x, y);
-                    Debug.Log(y+"yyy");
                 }
                 else
                 {
                     var x = size.y / tex.height * tex.width;
                     x = x > size.x ? size.x: x;
                     FileImage.GetComponent<RectTransform>().sizeDelta = new Vector2(x, size.y);
-                    Debug.Log(x+"xxx");
                 }
                 ResInfo.Width = tex.width;
                 ResInfo.Height = tex.height;
@@ -204,11 +232,19 @@
 
         public void SetFileName(string name)
         {
-            ResInfo.FileName = name;
-            FileName.text = name;
+
             System.IO.FileInfo file = new System.IO.FileInfo(ResInfo.FileFullName);
-            ResInfo.FileFullName = file.DirectoryName + "/" + name;
-            file.MoveTo(file.DirectoryName + "/" + name);
+            if (File.Exists(file.DirectoryName + "/" + name))
+            {
+                SetFileName("副本-" + name);
+            }
+            else
+            {
+                ResInfo.FileName = name;
+                FileName.text = name;
+                ResInfo.FileFullName = file.DirectoryName + "/" + name;
+                file.MoveTo(file.DirectoryName + "/" + name);
+            }
         }
         public void SetTag(string ret)
         {
@@ -220,6 +256,10 @@
             if (File.Exists(ResInfo.FileFullName))
             {
                 File.Delete(ResInfo.FileFullName);
+                TypeEventSystem.Send(new DeleteItem()
+                {
+                    Extension = ResInfo.Extension
+                });
             }
             Destroy(gameObject);
         }

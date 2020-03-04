@@ -39,10 +39,26 @@ namespace QFramework
     using UnityEngine.UI;
     using Object = UnityEngine.Object;
     #endif
-
-
+    
+    /// <summary>
+    /// 一些基础类型的扩展
+    /// </summary>
     public static class BasicValueExtension
     {
+        /// <summary>
+        /// 是否相等
+        /// 
+        /// 示例：
+        /// <code>
+        /// if (this.Is(player))
+        /// {
+        ///     ...
+        /// }
+        /// </code>
+        /// </summary>
+        /// <param name="selfObj"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static bool Is(this object selfObj, object value)
         {
             return selfObj == value;
@@ -53,7 +69,17 @@ namespace QFramework
             return condition(selfObj);
         }
         
-        
+        /// <summary>
+        /// 表达式成立 则执行 Action
+        /// 
+        /// 示例:
+        /// <code>
+        /// (1 == 1).Do(()=>Debug.Log("1 == 1");
+        /// </code>
+        /// </summary>
+        /// <param name="selfCondition"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static bool Do(this bool selfCondition, Action action)
         {
             if (selfCondition)
@@ -64,6 +90,17 @@ namespace QFramework
             return selfCondition;
         }
 
+        /// <summary>
+        /// 不管表达成不成立 都执行 Action，并把结果返回
+        /// 
+        /// 示例:
+        /// <code>
+        /// (1 == 1).Do((result)=>Debug.Log("1 == 1:" + result);
+        /// </code>
+        /// </summary>
+        /// <param name="selfCondition"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public static bool Do(this bool selfCondition, Action<bool> action)
         {
             action(selfCondition);
@@ -80,6 +117,7 @@ namespace QFramework
     {
         /// <summary>
         /// 功能：判断是否为空
+        /// 
         /// 示例：
         /// <code>
         /// var simpleObject = new object();
@@ -128,6 +166,7 @@ namespace QFramework
 
         /// <summary>
         /// 功能：不为空则调用 Func
+        /// 
         /// 示例:
         /// <code>
         /// Func<int> func = ()=> 1;
@@ -148,6 +187,7 @@ namespace QFramework
 
         /// <summary>
         /// 功能：不为空则调用 Action
+        /// 
         /// 示例:
         /// <code>
         /// System.Action action = () => Log.I("action called");
@@ -169,6 +209,7 @@ namespace QFramework
 
         /// <summary>
         /// 不为空则调用 Action<T>
+        /// 
         /// 示例:
         /// <code>
         /// System.Action<int> action = (number) => Log.I("action called" + number);
@@ -191,6 +232,8 @@ namespace QFramework
 
         /// <summary>
         /// 不为空则调用 Action<T,K>
+        ///
+        /// 示例
         /// <code>
         /// System.Action<int,string> action = (number,name) => Log.I("action called" + number + name);
         /// action.InvokeGracefully(10,"qframework"); // if (action != null) action(10,"qframework");
@@ -211,6 +254,8 @@ namespace QFramework
 
         /// <summary>
         /// 不为空则调用委托
+        ///
+        /// 示例：
         /// <code>
         /// // delegate
         /// TestDelegate testDelegate = () => { };
@@ -235,8 +280,10 @@ namespace QFramework
 
     /// <summary>
     /// 泛型工具
+    /// 
     /// 实例：
     /// <code>
+    /// 示例：
     /// var typeName = GenericExtention.GetTypeName<string>();
     /// typeName.LogInfo(); // string
     /// </code>
@@ -460,6 +507,24 @@ namespace QFramework
     /// </summary>
     public static class IOExtension
     {
+        
+        /// <summary>
+        /// 检测路径是否存在，如果不存在则创建
+        /// </summary>
+        /// <param name="path"></param>
+        public static string CreateDirIfNotExists4FilePath(this string path)
+        { 
+            var direct = Path.GetDirectoryName(path);
+            
+            if (!Directory.Exists(direct))
+            {
+                Directory.CreateDirectory(direct);
+            }
+
+            return path;
+        }
+        
+        
         /// <summary>
         /// 创建新的文件夹,如果存在则不创建
         /// <code>
@@ -552,26 +617,6 @@ namespace QFramework
 
         #region 未经过测试
 
-        /// <summary>
-        /// 读取文本
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public static string ReadText(this string fileFullPath)
-        {
-            var result = string.Empty;
-
-            using (var fs = new FileStream(fileFullPath, FileMode.Open, FileAccess.Read))
-            {
-                using (var sr = new StreamReader(fs))
-                {
-                    result = sr.ReadToEnd();
-                }
-            }
-
-            return result;
-        }
-
 #if UNITY_EDITOR
         /// <summary>
         /// 打开文件夹
@@ -594,7 +639,7 @@ namespace QFramework
         /// <returns></returns>
         public static string GetDirectoryName(string fileName)
         {
-            fileName = IOExtension.MakePathStandard(fileName);
+            fileName = MakePathStandard(fileName);
             return fileName.Substring(0, fileName.LastIndexOf('/'));
         }
 
@@ -656,23 +701,6 @@ namespace QFramework
             {
                 Directory.CreateDirectory(path);
             }
-        }
-
-        /// <summary>
-        /// 结合目录
-        /// </summary>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        public static string Combine(params string[] paths)
-        {
-            string result = "";
-            foreach (string path in paths)
-            {
-                result = Path.Combine(result, path);
-            }
-
-            result = MakePathStandard(result);
-            return result;
         }
 
         /// <summary>
@@ -841,79 +869,24 @@ namespace QFramework
     }
 
     /// <summary>
-    /// Assembly 管理器
+    /// 程序集工具
     /// </summary>
-    public class AssemblyManager
+    public class AssemblyUtil
     {
         /// <summary>
-        /// 编辑器默认的程序集Assembly-CSharp.dll
-        /// </summary>
-        private static Assembly defaultCSharpAssembly;
-
-#if UNITY_ANDROID
-        /// <summary>
-        /// 程序集缓存
-        /// </summary>
-        private static Dictionary<string, Assembly> assemblyCache = new Dictionary<string, Assembly>();
-#endif
-
-        /// <summary>
-        /// 获取编辑器默认的程序集Assembly-CSharp.dll
+        /// 获取 Assembly-CSharp 程序集
         /// </summary>
         public static Assembly DefaultCSharpAssembly
         {
             get
             {
-                //如果已经找到，直接返回
-                if (defaultCSharpAssembly != null)
-                    return defaultCSharpAssembly;
-
-                //从当前加载的程序包中寻找，如果找到，则直接记录并返回
-                var assems = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assem in assems)
-                {
-                    //所有本地代码都编译到Assembly-CSharp中
-                    if (assem.GetName().Name == "Assembly-CSharp")
-                    {
-                        //保存到列表并返回
-                        defaultCSharpAssembly = assem;
-                        break;
-                    }
-                }
-
-                return defaultCSharpAssembly;
+                return AppDomain.CurrentDomain.GetAssemblies()
+                    .SingleOrDefault(a => a.GetName().Name == "Assembly-CSharp");
             }
         }
-
+        
         /// <summary>
-        /// 获取Assembly
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static Assembly GetAssembly(string name)
-        {
-#if UNITY_ANDROID
-            if (!assemblyCache.ContainsKey(name))
-                return null;
-
-            return assemblyCache[name];
-#else
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-
-                if (assembly.GetName().Name == name)
-                {
-                    return assembly;
-                }
-            }
-
-            return null;
-#endif
-        }
-
-
-        /// <summary>
-        /// 获取默认的程序集
+        /// 获取默认的程序集中的类型
         /// </summary>
         /// <param name="typeName"></param>
         /// <returns></returns>
@@ -921,13 +894,8 @@ namespace QFramework
         {
             return DefaultCSharpAssembly.GetType(typeName);
         }
-
-
-        public static Type[] GetTypeList(string assemblyName)
-        {
-            return GetAssembly(assemblyName).GetTypes();
-        }
     }
+
 
     /// <summary>
     /// 反射扩展
@@ -1103,34 +1071,6 @@ namespace QFramework
         {
             return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
         }
-    }
-
-    /// <summary>
-    /// 通过编写方法并且添加属性可以做到转换至String 如：
-    /// 
-    /// <example>
-    /// [ToString]
-    /// public static string ConvertToString(TestObj obj)
-    /// </example>
-    ///
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public class ToString : Attribute
-    {
-    }
-
-    /// <summary>
-    /// 通过编写方法并且添加属性可以做到转换至String 如：
-    /// 
-    /// <example>
-    /// [FromString]
-    /// public static TestObj ConvertFromString(string str)
-    /// </example>
-    ///
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public class FromString : Attribute
-    {
     }
 
     /// <summary>
@@ -1787,7 +1727,7 @@ namespace QFramework
 
         #endregion
 
-        public static T As<T>(this Object selfObj) where T : Object
+        public static T As<T>(this object selfObj) where T : class
         {
             return selfObj as T;
         }

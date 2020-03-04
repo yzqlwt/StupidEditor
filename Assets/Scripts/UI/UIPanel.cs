@@ -36,7 +36,7 @@ namespace QFramework.Example
 
     public partial class UIPanel : QFramework.UIPanel
     {
-        private float Version = 1.0f;
+        private float Version = 1.2f;
         public GameObject ResourceItem;
         public Transform ScrollViewContent;
         public Transform Inspector;
@@ -44,6 +44,7 @@ namespace QFramework.Example
         public Text TemplateText;
         public Button UploadButton;
         public Button DownloadButton;
+        public Button ClearAllResButton;
         public Template _template;
         protected override void ProcessMsg(int eventId, QFramework.QMsg msg)
         {
@@ -54,7 +55,8 @@ namespace QFramework.Example
         {
             mData = uiData as UIPanelData ?? new UIPanelData();
             // please add init code here
-            isTexturePackage.isOn = PlayerPrefs.GetInt("isTexturePackage") > 0;
+            isTexturePackage.isOn = PlayerPrefs.GetInt("isTexturePackage", 1) > 0;
+            ResourceTag.Default = isTexturePackage.isOn ? ResourceTag.TexturePackage : ResourceTag.None;
             isTexturePackage.onValueChanged.AddListener((ret) =>
             {
                 ResourceTag.Default = isTexturePackage.isOn ? ResourceTag.TexturePackage : ResourceTag.None;
@@ -70,13 +72,23 @@ namespace QFramework.Example
             {
                 transform.GetComponent<Backends>().Download(_template);
             });
+            ClearAllResButton.onClick.AddListener(() =>
+            {
+                int childCount = ScrollViewContent.childCount;
+                for (int i = 0; i < childCount ; i++) {
+                    Destroy (ScrollViewContent.GetChild (i).gameObject);
+                }
+                DirTools.ClearTempPath();
+                DirTools.ClearOutputPath();
+            });
+            
             var LoginPanel = transform.Find("LoginPanel");
             if (LoginPanel)
             {
                 LoginPanel.gameObject.SetActive(true);
             }
 
-            StartCoroutine(VersionCheck());
+            // StartCoroutine(VersionCheck());
         }
 
         protected override void OnOpen(QFramework.IUIData uiData)
@@ -126,9 +138,11 @@ namespace QFramework.Example
                 });
                 if (target != null)
                 {
+                    var resItem = target.GetComponent<ResourceItem>();
                     SimplePopupManager.Instance.CreatePopup(string.Format("文件名相同，直接替换原有资源{0}", fileInfo.FileName));
                     SimplePopupManager.Instance.AddButton("知道了", delegate
                     {
+                        fileInfo.Tag = resItem.ResInfo.Tag;
                         target.GetComponent<ResourceItem>().SetItemInfo(fileInfo);
                     });
                     SimplePopupManager.Instance.ShowPopup();
@@ -164,6 +178,7 @@ namespace QFramework.Example
                                 {
                                     var originName = resItem.ResInfo.FileName;
                                     File.Delete(resItem.ResInfo.FileFullName);
+                                    fileInfo.Tag = resItem.ResInfo.Tag;
                                     resItem.SetItemInfo(fileInfo);
                                     resItem.SetFileName(originName);
                                 }
@@ -223,6 +238,26 @@ namespace QFramework.Example
             }
         }
 
+        public List<Transform> GetTotalItem()
+        {
+            List<Transform> totalItem = new List<Transform>();
+            foreach (Transform child in ScrollViewContent)
+            {
+                totalItem.Add(child);
+            }
+            return totalItem;
+        }
+        public List<ResourceInfo> GetTotalInfo()
+        {
+            List<ResourceInfo> TotalInfo = new List<ResourceInfo>();
+            foreach (Transform child in ScrollViewContent)
+            {
+                var info = child.GetComponent<ResourceItem>().ResInfo;
+                TotalInfo.Add(info);
+            }
+
+            return TotalInfo;
+        }
         private bool GenerateZip()
         { 
             Debug.Log("导出");
@@ -233,7 +268,7 @@ namespace QFramework.Example
                 var info = child.GetComponent<ResourceItem>().ResInfo;
                 TotalInfo.Add(info);
             }
-
+            
             var texturePackageComponent = transform.GetComponent<TexturePackageComponent>();
             var result = texturePackageComponent.TexturePackage(TotalInfo);
             if (result.Ret == false)

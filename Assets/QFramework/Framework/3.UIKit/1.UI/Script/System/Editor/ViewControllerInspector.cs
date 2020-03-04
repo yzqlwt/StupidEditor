@@ -1,12 +1,10 @@
-﻿using QF;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
-
 
 namespace QFramework
 {
     [CustomEditor(typeof(ViewController), true)]
-    public class ViewControllerInspector : UnityEditor.Editor
+    public class ViewControllerInspector : Editor
     {
         class LocaleText
         {
@@ -29,7 +27,7 @@ namespace QFramework
             {
                 get { return Language.IsChinese ? "Prefab 生成目录:" : "Prefab Generate Folder:"; }
             }
-            
+
             public static string Generate
             {
                 get { return Language.IsChinese ? " 生成代码" : " Generate Code"; }
@@ -38,24 +36,38 @@ namespace QFramework
 
 
         private VerticalLayout mRootLayout;
-        
+
+        private ViewController mCodeGenerateInfo
+        {
+            get { return target as ViewController; }
+        }
+
         private void OnEnable()
         {
             mRootLayout = new VerticalLayout();
-            
-            new ButtonView(LocaleText.Generate , () =>
-                {
-                    CreateViewControllerCode.DoCreateCodeFromScene((target as ViewController).gameObject);
-                })
+
+            new ButtonView(LocaleText.Generate,
+                    () => { CreateViewControllerCode.DoCreateCodeFromScene((target as ViewController).gameObject); })
                 .Height(30)
                 .AddTo(mRootLayout);
+
+            if (mCodeGenerateInfo.ScriptsFolder.IsNullOrEmpty())
+            {
+                var setting = UIKitSettingData.Load();
+                mCodeGenerateInfo.ScriptsFolder = "Assets" + setting.DefaultViewControllerScriptDir;
+            }
+
+            if (mCodeGenerateInfo.PrefabFolder.IsNullOrEmpty())
+            {
+                var setting = UIKitSettingData.Load();
+                mCodeGenerateInfo.PrefabFolder = "Assets" + setting.DefaultViewControllerPrefabDir;
+            }
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            var codeGenerateInfo = target as ViewController;
 
             GUILayout.BeginVertical("box");
 
@@ -65,38 +77,37 @@ namespace QFramework
                 fontSize = 15
             });
 
-            if (codeGenerateInfo.ScriptName.IsNullOrEmpty())
+            if (mCodeGenerateInfo.ScriptName.IsNullOrEmpty())
             {
-                codeGenerateInfo.ScriptName = codeGenerateInfo.name;
+                mCodeGenerateInfo.ScriptName = mCodeGenerateInfo.name;
             }
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(LocaleText.ScriptName, GUILayout.Width(150));
-            codeGenerateInfo.ScriptName = GUILayout.TextArea(codeGenerateInfo.ScriptName);
+            mCodeGenerateInfo.ScriptName = GUILayout.TextArea(mCodeGenerateInfo.ScriptName);
             GUILayout.EndHorizontal();
 
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(LocaleText.ScriptsFolder, GUILayout.Width(150));
-            codeGenerateInfo.ScriptsFolder = GUILayout.TextArea(codeGenerateInfo.ScriptsFolder, GUILayout.Height(30));
+            mCodeGenerateInfo.ScriptsFolder = GUILayout.TextArea(mCodeGenerateInfo.ScriptsFolder, GUILayout.Height(30));
 
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            codeGenerateInfo.GeneratePrefab =
-                GUILayout.Toggle(codeGenerateInfo.GeneratePrefab, LocaleText.GeneratePrefab);
+            mCodeGenerateInfo.GeneratePrefab =
+                GUILayout.Toggle(mCodeGenerateInfo.GeneratePrefab, LocaleText.GeneratePrefab);
             GUILayout.EndHorizontal();
-
-
-            if (codeGenerateInfo.GeneratePrefab)
+            
+            if (mCodeGenerateInfo.GeneratePrefab)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(LocaleText.PrefabGenreateFolder, GUILayout.Width(150));
-                codeGenerateInfo.PrefabFolder =
-                    GUILayout.TextArea(codeGenerateInfo.PrefabFolder, GUILayout.Height(30));
+                mCodeGenerateInfo.PrefabFolder =
+                    GUILayout.TextArea(mCodeGenerateInfo.PrefabFolder, GUILayout.Height(30));
                 GUILayout.EndHorizontal();
             }
-            
+
             mRootLayout.DrawGUI();
 
             GUILayout.EndVertical();

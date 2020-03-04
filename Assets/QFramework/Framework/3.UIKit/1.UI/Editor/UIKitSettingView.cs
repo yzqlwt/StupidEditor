@@ -24,119 +24,226 @@
  ****************************************************************************/
 
 
-namespace QFramework {
-    public class UIKitSettingView : VerticalLayout, IPackageKitView {
+using System.IO;
+using QFramework.PackageKit;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace QFramework
+{
+    public class UIKitSettingView : VerticalLayout, IPackageKitView
+    {
         private UIKitSettingData mUiKitSettingData;
 
-        public UIKitSettingView () {
-            mUiKitSettingData = UIKitSettingData.Load ();
+        public UIKitSettingView()
+        {
+            mUiKitSettingData = UIKitSettingData.Load();
         }
 
         public IQFrameworkContainer Container { get; set; }
 
-        public int RenderOrder {
+        public int RenderOrder
+        {
             get { return 0; }
         }
 
         public bool Ignore { get; private set; }
 
-        public bool Enabled {
+        public bool Enabled
+        {
             get { return true; }
         }
 
         private VerticalLayout mRootLayout = null;
 
-        public void Init (IQFrameworkContainer container) {
-            var treeNode = new TreeNode (false, LocaleText.UIKitSettings)
-                .AddTo (this);
+        public void Init(IQFrameworkContainer container)
+        {
+            var bindingSet = BindKit.CreateBindingSet(this, new UIKitSettingViewModel());
 
-            mRootLayout = new VerticalLayout ("box");
+            var treeNode = new TreeNode(false, LocaleText.UIKitSettings,autosaveSpreadState:true)
+                .AddTo(this);
 
-            treeNode.Add2Spread (mRootLayout);
+            mRootLayout = new VerticalLayout("box");
 
-            new SpaceView (6).AddTo (mRootLayout);
+            treeNode.Add2Spread(mRootLayout);
+
+
+            mRootLayout.AddChild(new SpaceView(6));
 
             // 命名空间
-            var nameSpaceLayout = new HorizontalLayout ()
-                .AddTo (mRootLayout);
+            var nameSpaceLayout = new HorizontalLayout()
+                .AddTo(mRootLayout);
 
-            new LabelView (LocaleText.Namespace)
-                .FontSize (12)
-                .FontBold ()
-                .Width (200)
-                .AddTo (nameSpaceLayout);
+            new LabelView(LocaleText.Namespace)
+                .FontSize(12)
+                .FontBold()
+                .Width(200)
+                .AddTo(nameSpaceLayout);
 
-            new TextView (mUiKitSettingData.Namespace)
-                .AddTo (nameSpaceLayout)
-                .Content.Bind (content => mUiKitSettingData.Namespace = content);
+            new TextView(mUiKitSettingData.Namespace)
+                .AddTo(nameSpaceLayout)
+                .Content.Bind(content => mUiKitSettingData.Namespace = content);
 
             // UI 生成的目录
-            new SpaceView (6).AddTo (mRootLayout);
+            new SpaceView(6)
+                .AddTo(mRootLayout);
 
-            var uiScriptGenerateDirLayout = new HorizontalLayout ()
-                .AddTo (mRootLayout);
+            var uiScriptGenerateDirLayout = new HorizontalLayout()
+                .AddTo(mRootLayout);
 
-            new LabelView (LocaleText.UIScriptGenerateDir)
-                .FontSize (12)
-                .FontBold ()
-                .Width (200)
-                .AddTo (uiScriptGenerateDirLayout);
+            new LabelView(LocaleText.UIScriptGenerateDir)
+                .FontSize(12)
+                .FontBold()
+                .Width(200)
+                .AddTo(uiScriptGenerateDirLayout);
 
-            new TextView (mUiKitSettingData.UIScriptDir)
-                .AddTo (uiScriptGenerateDirLayout)
-                .Content.Bind (content => mUiKitSettingData.UIScriptDir = content);
+            new TextView(mUiKitSettingData.UIScriptDir)
+                .AddTo(uiScriptGenerateDirLayout)
+                .Content.Bind(content => mUiKitSettingData.UIScriptDir = content);
 
-            new SpaceView (6).AddTo (mRootLayout);
 
-            var uiPanelPrefabDir = new HorizontalLayout ()
-                .AddTo (mRootLayout);
+            mRootLayout.AddChild(new SpaceView(6));
 
-            new LabelView (LocaleText.UIPanelPrefabDir)
-                .FontSize (12)
-                .FontBold ()
-                .Width (200)
-                .AddTo (uiPanelPrefabDir);
+            var uiPanelPrefabDir = new HorizontalLayout()
+                .AddTo(mRootLayout);
 
-            new TextView (mUiKitSettingData.UIPrefabDir)
-                .AddTo (uiPanelPrefabDir)
-                .Content.Bind (content => mUiKitSettingData.UIPrefabDir = content);
+            new LabelView(LocaleText.UIPanelPrefabDir)
+                .FontSize(12)
+                .FontBold()
+                .Width(200)
+                .AddTo(uiPanelPrefabDir);
 
-            new SpaceView (6).AddTo (mRootLayout);
+            new TextView(mUiKitSettingData.UIPrefabDir)
+                .AddTo(uiPanelPrefabDir)
+                .Content.Bind(content => mUiKitSettingData.UIPrefabDir = content);
 
-            new ButtonView (LocaleText.Apply, () => { mUiKitSettingData.Save (); })
-                .AddTo (mRootLayout);
+            mRootLayout.AddChild(new SpaceView(6));
+            
+            
+            // UI 生成的目录
+            new SpaceView(6)
+                .AddTo(mRootLayout);
+
+            var viewControllerScriptGenerateDirLayout = new HorizontalLayout()
+                .AddTo(mRootLayout);
+
+            new LabelView(LocaleText.ViewControllerScriptGenerateDir)
+                .FontSize(12)
+                .FontBold()
+                .Width(200)
+                .AddTo(viewControllerScriptGenerateDirLayout);
+
+            new TextView(mUiKitSettingData.DefaultViewControllerScriptDir)
+                .AddTo(viewControllerScriptGenerateDirLayout)
+                .Content.Bind(content => mUiKitSettingData.DefaultViewControllerScriptDir = content);
+
+
+            mRootLayout.AddChild(new SpaceView(6));
+
+            var viewControllerPrefabDir = new HorizontalLayout()
+                .AddTo(mRootLayout);
+
+            new LabelView(LocaleText.ViewControllerPrefabGenerateDir)
+                .FontSize(12)
+                .FontBold()
+                .Width(220)
+                .AddTo(viewControllerPrefabDir);
+
+            new TextView(mUiKitSettingData.DefaultViewControllerPrefabDir)
+                .AddTo(viewControllerPrefabDir)
+                .Content.Bind(content => mUiKitSettingData.DefaultViewControllerPrefabDir = content);
+
+            mRootLayout.AddChild(new SpaceView(6));
+
+            // 保存数据
+            new ButtonView(LocaleText.Apply, () => { mUiKitSettingData.Save(); })
+                .AddTo(mRootLayout);
+
+
+            new TextView()
+                .AddTo(mRootLayout)
+                .Do(text =>
+                {
+                    bindingSet
+                        .Bind(text.Content)
+                        .For(v => v.Value, v => v.OnValueChanged)
+                        .To(vm => vm.PanelNameToCreate);
+                });
+
+            // 创建 UI 界面 按钮的绑定
+            new ButtonView(LocaleText.CreateUIPanel)
+                .AddTo(mRootLayout)
+                .Do(btn => { bindingSet.Bind(btn).For(v => v.OnClick).To(vm => vm.OnCreateUIPanelClick); });
+
+            bindingSet.Build();
         }
 
-        public void OnUpdate () {
+        public void OnUpdate()
+        {
 
         }
 
         private bool ShowLabel2;
-        public void OnGUI () {
-            this.DrawGUI ();
+
+        public void OnGUI()
+        {
+            this.DrawGUI();
         }
 
-        public void OnDispose () { }
+        public void OnDispose()
+        {
+        }
 
-        class LocaleText {
-            public static string Namespace {
+        class LocaleText
+        {
+            public static string Namespace
+            {
                 get { return Language.IsChinese ? " 默认命名空间:" : " Namespace:"; }
             }
 
-            public static string UIScriptGenerateDir {
+            public static string UIScriptGenerateDir
+            {
                 get { return Language.IsChinese ? " UI 脚本生成路径:" : " UI Scripts Generate Dir:"; }
             }
 
-            public static string UIPanelPrefabDir {
+            public static string UIPanelPrefabDir
+            {
                 get { return Language.IsChinese ? " UIPanel Prefab 路径:" : " UIPanel Prefab Dir:"; }
             }
 
-            public static string Apply {
+            public static string ViewControllerScriptGenerateDir
+            {
+                get
+                {
+                    return Language.IsChinese ? " ViewController 脚本生成路径:" : " Default ViewController Generate Dir:";
+                }
+            }
+
+            public static string ViewControllerPrefabGenerateDir
+            {
+                get
+                {
+                    return Language.IsChinese
+                        ? " ViewController Prefab 生成路径:"
+                        : " Default ViewController Prefab Dir:";
+                }
+            }
+
+            public static string Apply
+            {
                 get { return Language.IsChinese ? "保存" : "Apply"; }
             }
 
-            public static string UIKitSettings {
-                get { return Language.IsChinese ? "UI Kit 设置" : "Ui Kit Settings"; }
+            public static string UIKitSettings
+            {
+                get { return Language.IsChinese ? "UI Kit 设置" : "UI Kit Settings"; }
+            }
+
+            public static string CreateUIPanel
+            {
+                get { return Language.IsChinese ? "创建 UI Panel" : "Create UI Panel"; }
             }
         }
     }
